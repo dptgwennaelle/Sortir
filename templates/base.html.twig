@@ -1,17 +1,40 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=yes, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}Séries{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="icon" href={{ asset('img/icon.png') }}>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    {% block extrastyles%}{% endblock %}
+</head>
 
-        {% block javascripts %}
-{% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+<body>
+<div class="container">
+    <header>
+        <h1><a href={{ path('main_home') }}><img src="{{ asset('img/logo.svg') }}" alt="Series"></a></h1>
+        {%include "inc/nav.html.twig" %}
+    </header>
+    {# read and display all flash messages #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash flash-{{ label }}">
+                {{ message }}
+            </div>
+        {%endfor %}
+    {%endfor %}
+    <main>
+        {% block body %}salut les noobs{% endblock %}
+    </main>
+    <footer>
+        <div>&copy; {{ "now"|date("Y") }} Séries</div>
+    </footer>
+</div>
+</body>
 </html>
