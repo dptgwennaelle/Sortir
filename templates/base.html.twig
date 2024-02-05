@@ -5,36 +5,12 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=yes, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{% block title %}Séries{% endblock %}</title>
+    <title>{% block title %}Sortir{% endblock %}</title>
     <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
-    <link rel="icon" href={{ asset('img/icon.png') }}>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    {% block extrastyles%}{% endblock %}
+    {% block css%}{% endblock %}
 </head>
 
 <body>
-<div class="container">
-    <header>
-        <h1><a href={{ path('main_home') }}><img src="{{ asset('img/logo.svg') }}" alt="Series"></a></h1>
-        {%include "inc/nav.html.twig" %}
-    </header>
-    {# read and display all flash messages #}
-    {% for label, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="flash flash-{{ label }}">
-                {{ message }}
-            </div>
-        {%endfor %}
-    {%endfor %}
-    <main>
-        {% block body %}salut les noobs{% endblock %}
-    </main>
-    <footer>
-        <div>&copy; {{ "now"|date("Y") }} Séries</div>
-    </footer>
-</div>
+{% block body%}{% endblock %}
 </body>
 </html>
