@@ -1,15 +1,13 @@
 <nav>
     <ul>
-
-        {% if app.user %}
+        {# {% if app.user %} #}
             {% if is_granted("ROLE_ADMIN") %}
-                <li><a href="{{ path('') }}" title="Villes">Villes</a></li>
-                <li><a href="{{ path('') }}" title="Campus"></a>Campus</li>
+                <li><a href="{{ path('sortir_home') }}" title="Villes">Villes</a></li>
+                <li><a href="{{ path('sortir_home') }}" title="Campus"></a>Campus</li>
             {% endif %}
-            <li><a href="{{ path('') }}" title="Page d'accueil"></a>Accueil</li>
-            <li><a href="{{ path('') }}" title="Page du profil utilisateur">Mon profil</a></li>
-            <li><a href="{{ path('') }}" title="Page de déconnexion">Se déconnecter</a></li>
-
-        {% endif %}
+            <li><a href="{{ path('sortir_home') }}" title="Page d'accueil"></a>Accueil</li>
+            <li><a href="{{ path('sortir_home') }}" title="Page du profil utilisateur">Mon profil</a></li>
+            <li><a href="{{ path('sortir_home') }}" title="Page de déconnexion">Se déconnecter</a></li>
+        {# {% endif %} #}
     </ul>
 </nav>
