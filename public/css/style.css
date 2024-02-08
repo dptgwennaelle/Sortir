@@ -1,0 +1,124 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #edf5ff; /* Bleu ciel très pâle */
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #aedfff; /* Bleu ciel pâle */
+    padding: 20px;
+    text-align: center;
+}
+
+.flash {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.flash-success {
+    background-color: #87cefa; /* Bleu clair - Success */
+    color: #008000; /* Vert foncé */
+}
+
+.flash-error {
+    background-color: #ffb6c1; /* Rose pâle - Error */
+    color: #ff0000; /* Rouge */
+}
+
+h1 a {
+    text-decoration: none;
+}
+
+nav {
+    background-color: #c0e4fa; /* Bleu ciel - Navigation */
+    padding: 10px;
+    display: flex;
+    justify-content: space-around; /* Ajusté pour une seule ligne */
+    align-items: center;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+nav li {
+    margin: 0 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #0070d0; /* Bleu moyen */
+    font-size: 16px;
+    transition: color 0.3s ease-in-out;
+}
+
+nav a:hover {
+    color: #3498db; /* Bleu plus foncé au survol */
+}
+
+footer {
+    background-color: #aedfff; /* Bleu ciel pâle */
+    color: #333; /* Texte sombre */
+    padding: 20px;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+footer img {
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+}
+
+/* Styles spécifiques pour le formulaire de connexion */
+form {
+    font-family: 'Handlee', cursive;
+    max-width:26%;
+    margin: 5% 37% 5% 37%;
+    padding: 1%;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-control {
+    margin-bottom: 15px;
+}
+
+.btn-primary {
+    background-color: #0070d0; /* Bleu moyen - Bouton principal */
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #3498db; /* Bleu plus foncé au survol */
+}
+
+form label{
+    font-family: 'Handlee', cursive;
+    display: flex;
+    flex-direction: column;
+}
+
+form input{
+    width: 90%;
+    margin: 1% 5%;
+}
+
+form button{
+    width: 30%;
+    background-color: #3498db;
+    margin: 1% 35%;
+}
