@@ -122,3 +122,32 @@ form button{
     background-color: #3498db;
     margin: 1% 35%;
 }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #dcdcdc; /* Bordures grises */
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #3498db; /* Bleu plus foncé - Fond pour les entêtes */
+    color: #fff;
+}
+
+tr:hover {
+    background-color: #f5f5f5; /* Gris clair au survol des lignes */
+}
+
+article {
+    display: block;
+    margin-bottom: 10px;
+}

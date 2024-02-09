@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <table>
+        <tr>
+            <td>Nom de la Sortie</td>
+            <td>Date de la sortie</td>
+            <td>Inscriptions</td>
+            <td>Etat de la sortie</td>
+            <td>Organisateur</td>
+        </tr>
+        {% for sortie in sorties %}
+            <article>
+                <tr>
+                    <td>{{ sortie.nom }}</td>
+                    <td>{{ sortie.dateHeureDebut | date }}</td>
+                    {# todo : ajouter délais d'inscription #}
+                    {# todo : ajouter le */total des inscris#}
+                    <td>{{ sortie.nbInscriptionsMax }}</td>
+                    <td>{{ sortie.etat.libelle }}</td>
+                    {# todo : ajouter colonne inscrit ou non #}
+                    <td>{{ sortie.organisateur.nom }}</td>
+                    {# todo : ajouter onglet Action #}
+                </tr>
+            </article>
+            <a href="{{ path('sortir_create') }}" title="Creer une sortie"
+            ><button class="btn btn-lg btn-primary" type="submit">
+                    Créer une sortie
+                </button></a>
+
+        {% endfor%}
+    </table>
+{% endblock %}
