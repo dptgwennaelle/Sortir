@@ -7,11 +7,24 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}Sortir{% endblock %}</title>
     <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
+    <link rel="icon" href="{{ asset('img/icon.png') }}">
+
     {% block css%}{% endblock %}
 </head>
 
 <body>
-{% include 'inc/nav.html.twig' %}
-{% block body%} {% endblock %}
+   <header>
+
+       <div class = "logo">
+           <h1><a href = "{{ path('sortir_home') }}"><img src="{{ asset('img/icon.png') }}" alt="Logo Sortir.com"></a></h1>
+       </div>
+
+       {% include 'inc/nav.html.twig' %}
+
+   </header>
+{% block body%}{% endblock %}
 </body>
+
 </html>

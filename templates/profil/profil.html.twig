@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Mon Profil | {{ parent() }}
+{% endblock %}
+
+{% block css %}
+            <style>
+            header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .logo {
+                margin-left: 20px; /* Ajuster la marge selon votre mise en page */
+            }
+
+            nav {
+                margin-right: 20px; /* Ajuster la marge selon votre mise en page */
+            }
+
+            nav ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+                display: flex;
+            }
+
+            nav ul li {
+                margin-right: 10px; /* Espacement entre les éléments du menu */
+            }
+
+            nav ul li a {
+                text-decoration: none;
+                color: black; /* Couleur du texte du lien */
+                padding: 5px 10px; /* Espacement à l'intérieur du lien */
+                border: 1px solid black; /* Bordure autour du lien */
+                border-radius: 5px; /* Coins arrondis de la bordure */
+            }
+
+            .form-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                height: auto;
+            }
+
+            label {
+                display: block;
+                margin-left: 42%;
+            }
+
+            input,
+            select
+            {
+                box-sizing: border-box;
+                max-width: 100%;
+                width: 300px;
+            }
+
+            div{
+                padding: 12px;
+            }
+
+            .btn{
+                margin-top: 1rem;
+                margin-left: 42%;
+            }
+
+
+        </style>
+    {% endblock %}
+
+{% block body %}
+
+    <div class = "form-container">
+
+        <img src="{{ }}">
+
+        {{ form_errors(FormProfil) }}
+
+        {{ form_start(FormProfil) }}
+
+        {{ form_widget((FormProfil)) }}
+
+        <button type="submit" class="btn">Valider</button>
+
+        {{ form_end(FormProfil) }}
+    </div>
+
+{% endblock %}

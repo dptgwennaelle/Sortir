@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class SortieController extends AbstractController
@@ -12,4 +15,11 @@ class SortieController extends AbstractController
         return $this->render('sortie/home.html.twig', [
         ]);
  }
+
+    #[Route('/test', name: 'sortir_test')]
+    public function test(){
+        return $this->render('sortie/test.html.twig', [
+        ]);
+    }
+
 }

@@ -1,13 +1,18 @@
 <nav>
     <ul>
-        {# {% if app.user %} #}
+
+        {% if app.user %}
+
             {% if is_granted("ROLE_ADMIN") %}
-                <li><a href="{{ path('sortir_home') }}" title="Villes">Villes</a></li>
-                <li><a href="{{ path('sortir_home') }}" title="Campus"></a>Campus</li>
+                {#  <li> <a href="{{ path('') }}" title="Gestion des villes">Villes</a> </li>
+                <li> <a href="{{ path('') }}" title="Gestion des campus">Campus</a> </li>#}
+                <li> <a href="{{ path('app_register') }}" title="Gestion des participants">Participants</a> </li>
             {% endif %}
-            <li><a href="{{ path('sortir_home') }}" title="Page d'accueil"></a>Accueil</li>
-            <li><a href="{{ path('sortir_home') }}" title="Page du profil utilisateur">Mon profil</a></li>
-            <li><a href="{{ path('sortir_home') }}" title="Page de déconnexion">Se déconnecter</a></li>
-        {# {% endif %} #}
+
+            <li> <a href="{{ path('sortir_home') }}" title="Accueil">Accueil</a> </li>
+            <li> <a href="{{ path('app_profil') }}" title="Mon profil">Mon profil</a> </li>
+            <li> <a href="{{ path('app_logout') }}" title="Logout"> Se déconnecter </a> </li>
+
+        {% endif %}
     </ul>
 </nav>
