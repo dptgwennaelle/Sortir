@@ -6,38 +6,6 @@
 
 {% block css %}
             <style>
-            header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .logo {
-                margin-left: 20px; /* Ajuster la marge selon votre mise en page */
-            }
-
-            nav {
-                margin-right: 20px; /* Ajuster la marge selon votre mise en page */
-            }
-
-            nav ul {
-                list-style-type: none;
-                padding: 0;
-                margin: 0;
-                display: flex;
-            }
-
-            nav ul li {
-                margin-right: 10px; /* Espacement entre les éléments du menu */
-            }
-
-            nav ul li a {
-                text-decoration: none;
-                color: black; /* Couleur du texte du lien */
-                padding: 5px 10px; /* Espacement à l'intérieur du lien */
-                border: 1px solid black; /* Bordure autour du lien */
-                border-radius: 5px; /* Coins arrondis de la bordure */
-            }
 
             .form-container {
                 display: flex;
@@ -77,11 +45,12 @@
 
     <div class = "form-container">
 
-        <img src="{{ }}">
 
         {{ form_errors(FormProfil) }}
 
         {{ form_start(FormProfil) }}
+
+        <p>Prénom: {{ participant.prenom}}</p>
 
         {{ form_widget((FormProfil)) }}
 

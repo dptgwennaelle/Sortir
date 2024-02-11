@@ -12,9 +12,21 @@ nav {
     margin-right: 20px; /* Ajuster la marge selon votre mise en page */
 }
 
-.form-container {
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Pour occuper toute la hauteur de la fenêtre */
+}
+
+nav ul li {
+    margin-right: 10px; /* Espacement entre les éléments du menu */
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: black; /* Couleur du texte du lien */
+    padding: 5px 10px; /* Espacement à l'intérieur du lien */
+    border: 1px solid black; /* Bordure autour du lien */
+    border-radius: 5px; /* Coins arrondis de la bordure */
 }
