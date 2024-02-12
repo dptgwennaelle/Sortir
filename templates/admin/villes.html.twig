@@ -1,5 +1,75 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
+    {% block css %}
+        <style>
+            .table-container {
+                max-width: 400px;
+                max-height: 300px;
+                overflow-y: auto; /* Ajoute un défilement horizontal */
+                white-space: nowrap; /* Empêche le texte de se retourner à la ligne */
+                margin-left: 50px;
+            }
 
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            th, td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+
+            tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            .edit-button,
+            .delete-button {
+                background: none;
+                border: none;
+                padding: 0;
+                font: inherit;
+                cursor: pointer;
+                color: blue; /* Couleur du texte pour les boutons */
+                text-decoration: underline; /* Soulignement des liens */
+            }
+
+            .edit-button:hover,
+            .delete-button:hover {
+                text-decoration: none; /* Supprimer le soulignement au survol */
+            }
+        </style>
+    {% endblock %}
+
+{% block body %}
+        <h1>Liste des Villes</h1>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Code Postal</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for villes in ville %}
+                    <tr>
+                        <td>{{ villes.nom }}</td>
+                        <td>{{ villes.codePostal }}</td>
+                        <td>
+                            <!-- Bouton Modifier -->
+                            <button class="edit-button" type="submit">Modifier</button>
+                            <!-- Bouton Supprimer -->
+                            <button class="delete-button" type="submit">Supprimer</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
 {% endblock %}
+
