@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SortieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,6 +33,33 @@ class Sortie
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $infosSortie = null;
+
+    #[ORM\ManyToOne(inversedBy: 'campus')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Campus $listesSorties = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Etat $sorties = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Lieu $sortie = null;
+
+    #[ORM\ManyToOne(inversedBy: 'listeSortiesOrganisees')]
+    private ?Participant $listeSortiesOrganisees = null;
+
+    #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'listeSortiesDuParticipant')]
+    private Collection $listeSortiesDuParticipant;
+
+    #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'personnesInscrites')]
+    private Collection $personnesInscrites;
+
+    public function __construct()
+    {
+        $this->listeSortiesDuParticipant = new ArrayCollection();
+        $this->personnesInscrites = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -105,6 +134,105 @@ class Sortie
     public function setInfosSortie(?string $infosSortie): static
     {
         $this->infosSortie = $infosSortie;
+
+        return $this;
+    }
+
+    public function getListesSorties(): ?Campus
+    {
+        return $this->listesSorties;
+    }
+
+    public function setListesSorties(?Campus $listesSorties): static
+    {
+        $this->listesSorties = $listesSorties;
+
+        return $this;
+    }
+
+    public function getSorties(): ?Etat
+    {
+        return $this->sorties;
+    }
+
+    public function setSorties(?Etat $sorties): static
+    {
+        $this->sorties = $sorties;
+
+        return $this;
+    }
+
+    public function getSortie(): ?Lieu
+    {
+        return $this->sortie;
+    }
+
+    public function setSortie(?Lieu $sortie): static
+    {
+        $this->sortie = $sortie;
+
+        return $this;
+    }
+
+    public function getListeSortiesOrganisees(): ?Participant
+    {
+        return $this->listeSortiesOrganisees;
+    }
+
+    public function setListeSortiesOrganisees(?Participant $listeSortiesOrganisees): static
+    {
+        $this->listeSortiesOrganisees = $listeSortiesOrganisees;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Participant>
+     */
+    public function getListeSortiesDuParticipant(): Collection
+    {
+        return $this->listeSortiesDuParticipant;
+    }
+
+    public function addListeSortiesDuParticipant(Participant $listeSortiesDuParticipant): static
+    {
+        if (!$this->listeSortiesDuParticipant->contains($listeSortiesDuParticipant)) {
+            $this->listeSortiesDuParticipant->add($listeSortiesDuParticipant);
+            $listeSortiesDuParticipant->addListeSortiesDuParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeListeSortiesDuParticipant(Participant $listeSortiesDuParticipant): static
+    {
+        if ($this->listeSortiesDuParticipant->removeElement($listeSortiesDuParticipant)) {
+            $listeSortiesDuParticipant->removeListeSortiesDuParticipant($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Participant>
+     */
+    public function getPersonnesInscrites(): Collection
+    {
+        return $this->personnesInscrites;
+    }
+
+    public function addPersonnesInscrite(Participant $personnesInscrite): static
+    {
+        if (!$this->personnesInscrites->contains($personnesInscrite)) {
+            $this->personnesInscrites->add($personnesInscrite);
+        }
+
+        return $this;
+    }
+
+    public function removePersonnesInscrite(Participant $personnesInscrite): static
+    {
+        $this->personnesInscrites->removeElement($personnesInscrite);
 
         return $this;
     }

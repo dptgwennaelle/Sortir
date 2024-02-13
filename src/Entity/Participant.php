@@ -3,18 +3,28 @@
 namespace App\Entity;
 
 use App\Repository\ParticipantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Faker\Factory;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
-class Participant
+#[UniqueEntity(fields: ['identifiant'], message: 'There is already an account with this identifiant')]
+class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 180, unique: true)]
     private ?string $identifiant = null;
+
+    #[ORM\Column]
+    private array $roles = [];
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
@@ -22,7 +32,7 @@ class Participant
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
@@ -31,11 +41,21 @@ class Participant
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
-    #[ORM\Column]
-    private ?bool $administrateur = null;
+    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'listeSortiesOrganisees')]
+    private Collection $listeSortiesOrganisees;
 
-    #[ORM\Column]
-    private ?bool $actif = null;
+    #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'listeSortiesDuParticipant')]
+    private Collection $listeSortiesDuParticipant;
+
+    #[ORM\ManyToMany(targetEntity: Sortie::class, mappedBy: 'personnesInscrites')]
+    private Collection $personnesInscrites;
+
+    public function __construct()
+    {
+        $this->listeSortiesOrganisees = new ArrayCollection();
+        $this->listeSortiesDuParticipant = new ArrayCollection();
+        $this->personnesInscrites = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -83,7 +103,7 @@ class Participant
         return $this->telephone;
     }
 
-    public function setTelephone(?string $telephone): static
+    public function setTelephone(string $telephone): static
     {
         $this->telephone = $telephone;
 
@@ -114,26 +134,99 @@ class Participant
         return $this;
     }
 
-    public function isAdministrateur(): ?bool
+    public function getRoles(): array
     {
-        return $this->administrateur;
+        return ['ROLE_USER'];
     }
 
-    public function setAdministrateur(bool $administrateur): static
+    public function eraseCredentials(): void
     {
-        $this->administrateur = $administrateur;
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->identifiant;
+
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getListeSortiesOrganisees(): Collection
+    {
+        return $this->listeSortiesOrganisees;
+    }
+
+    public function addListeSortiesOrganisee(Sortie $listeSortiesOrganisee): static
+    {
+        if (!$this->listeSortiesOrganisees->contains($listeSortiesOrganisee)) {
+            $this->listeSortiesOrganisees->add($listeSortiesOrganisee);
+            $listeSortiesOrganisee->setListeSortiesOrganisees($this);
+        }
 
         return $this;
     }
 
-    public function isActif(): ?bool
+    public function removeListeSortiesOrganisee(Sortie $listeSortiesOrganisee): static
     {
-        return $this->actif;
+        if ($this->listeSortiesOrganisees->removeElement($listeSortiesOrganisee)) {
+            // set the owning side to null (unless already changed)
+            if ($listeSortiesOrganisee->getListeSortiesOrganisees() === $this) {
+                $listeSortiesOrganisee->setListeSortiesOrganisees(null);
+            }
+        }
+
+        return $this;
     }
 
-    public function setActif(bool $actif): static
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getListeSortiesDuParticipant(): Collection
     {
-        $this->actif = $actif;
+        return $this->listeSortiesDuParticipant;
+    }
+
+    public function addListeSortiesDuParticipant(Sortie $listeSortiesDuParticipant): static
+    {
+        if (!$this->listeSortiesDuParticipant->contains($listeSortiesDuParticipant)) {
+            $this->listeSortiesDuParticipant->add($listeSortiesDuParticipant);
+        }
+
+        return $this;
+    }
+
+    public function removeListeSortiesDuParticipant(Sortie $listeSortiesDuParticipant): static
+    {
+        $this->listeSortiesDuParticipant->removeElement($listeSortiesDuParticipant);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getPersonnesInscrites(): Collection
+    {
+        return $this->personnesInscrites;
+    }
+
+    public function addPersonnesInscrite(Sortie $personnesInscrite): static
+    {
+        if (!$this->personnesInscrites->contains($personnesInscrite)) {
+            $this->personnesInscrites->add($personnesInscrite);
+            $personnesInscrite->addPersonnesInscrite($this);
+        }
+
+        return $this;
+    }
+
+    public function removePersonnesInscrite(Sortie $personnesInscrite): static
+    {
+        if ($this->personnesInscrites->removeElement($personnesInscrite)) {
+            $personnesInscrite->removePersonnesInscrite($this);
+        }
 
         return $this;
     }
