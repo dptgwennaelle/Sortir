@@ -21,6 +21,7 @@ class ParticipantRepository extends ServiceEntityRepository
         parent::__construct($registry, Participant::class);
     }
 
+
 //    /**
 //     * @return Participant[] Returns an array of Participant objects
 //     */
