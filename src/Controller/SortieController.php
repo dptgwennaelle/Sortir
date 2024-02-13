@@ -51,4 +51,20 @@ class SortieController extends AbstractController
         ]);
     }
 
+    #[Route('/Sortie/delete/{id}', name: 'sortir_delete', requirements: ["id"=>"\d+"])]
+    public function delete(int $id, EntityManagerInterface $entityManager, SortieRepository $sortieRepository){
+        $sortie = $sortieRepository->find($id);
+
+        if (!$sortie) {
+            throw $this->createNotFoundException('Sortie non trouvée avec l\'id '.$id);
+        }
+
+        $sortieList = $sortieRepository->findAll();
+        $entityManager->remove($sortie);
+        $entityManager->flush();
+
+        return $this->render('sortie/liste.html.twig', [
+            'sorties' => $sortieList
+        ]);
+    }
 }
