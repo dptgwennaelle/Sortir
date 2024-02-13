@@ -27,12 +27,11 @@ class Lieu
     #[ORM\Column(nullable: true)]
     private ?float $longitude = null;
 
-    #[ORM\ManyToOne(inversedBy: 'lieux')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Ville $ville = null;
-
-    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'lieu', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'sortie', orphanRemoval: true)]
     private Collection $sorties;
+
+    #[ORM\ManyToOne(inversedBy: 'lieu')]
+    private ?Ville $lieux = null;
 
     public function __construct()
     {
@@ -92,18 +91,6 @@ class Lieu
         return $this;
     }
 
-    public function getVille(): ?Ville
-    {
-        return $this->ville;
-    }
-
-    public function setVille(?Ville $ville): static
-    {
-        $this->ville = $ville;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Sortie>
      */
@@ -116,7 +103,7 @@ class Lieu
     {
         if (!$this->sorties->contains($sorty)) {
             $this->sorties->add($sorty);
-            $sorty->setLieu($this);
+            $sorty->setSortie($this);
         }
 
         return $this;
@@ -126,10 +113,22 @@ class Lieu
     {
         if ($this->sorties->removeElement($sorty)) {
             // set the owning side to null (unless already changed)
-            if ($sorty->getLieu() === $this) {
-                $sorty->setLieu(null);
+            if ($sorty->getSortie() === $this) {
+                $sorty->setSortie(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLieux(): ?Ville
+    {
+        return $this->lieux;
+    }
+
+    public function setLieux(?Ville $lieux): static
+    {
+        $this->lieux = $lieux;
 
         return $this;
     }

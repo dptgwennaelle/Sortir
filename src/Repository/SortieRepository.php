@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,6 +20,24 @@ class SortieRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Sortie::class);
+    }
+
+    public function add(Sortie $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(Sortie $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
     }
 
 //    /**
@@ -45,4 +64,23 @@ class SortieRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function filtrerSorties()
+    {
+        $queryBuilder = $this->createQueryBuilder('s');
+
+        $queryBuilder->andWhere('s.dateHeureDebut > :now')
+            ->setParameter('now', new \DateTime());
+
+        // Ajoutez d'autres conditions de filtrage si nécessaire
+
+        $queryBuilder->addOrderBy('s.dateHeureDebut', 'ASC');
+
+        $query = $queryBuilder->getQuery();
+        $query->setMaxResults(50);
+
+        $paginator = new Paginator($query);
+
+        return $paginator;
+    }
 }

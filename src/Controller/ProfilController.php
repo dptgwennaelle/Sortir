@@ -2,63 +2,38 @@
 
 namespace App\Controller;
 
-use App\Entity\Participant;
-use App\Entity\Wish;
-use App\Form\ProfilType;
-use App\Form\WishFormType;
 use App\Repository\ParticipantRepository;
-use App\Repository\WishRepository;
-use App\Service\Censurator;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\SerieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProfilController extends AbstractController
 {
+/*Petit pense bête à usage personnel:
+ *
+ * Un controller pour chaque type de page.
+Une action affiche une vue.
 
-    #[Route('/profil', name: 'profil_liste')]
-    public function liste(ParticipantRepository $participantRepository): Response
-    {
-        $participantId = $this->getUser()->getUserIdentifier();
-        $profil = $participantRepository->findOneByIdentifiant($participantId);
-        return $this->render('profil/liste.html.twig', [
-            'profil'=>$profil
-        ]);
-    }
-    #[Route('/profil/detail/{id}', name: 'profil_detail')]
+Dans chaque controller:
+    - 1 route = 1 action -> méthode */
+
+
+            // Je suis dans le profil controller
+
+    // 1ère action, je souhaite afficher le profil
+
+            //A. La route
+    #[Route('/Participant/details/{id}', name: 'participant_details')]
     public function details(int $id, ParticipantRepository $participantRepository): Response
     {
-        $profil = $participantRepository->find($id);
-        if (!$profil){
+        $participant = $participantRepository->find($id);
+
+        if(!$participant){
             throw $this->createNotFoundException('Oh no!!!');
         }
-        return $this->render('profil/detail.html.twig', [
-            'profil'=>$profil
+        return $this->render('participant/details.html.twig', [
+            "profil"=> $participant
         ]);
     }
-    #[Route('/profil/create', name: 'profil_create')]
-    public function create(
-        Request $request,
-        EntityManagerInterface $entityManager,
-    ): Response
-    {
-        $profil = new Participant();
-        $profilForm = $this->createForm(ProfilType::class, $profil);
-
-        $profilForm->handleRequest($request);
-
-        if ($profilForm->isSubmitted() && $profilForm->isValid()) {
-            $entityManager->persist($profil);
-            $entityManager->flush();
-
-            //$this->addFlash('Succès', 'Voeux ajouté, bien joué!');
-            return $this->redirectToRoute('profil_liste', ['id' => $profil->getId()]);
-        }
-        return $this->render('profil/create.html.twig', [
-            'profilForm'=>$profilForm->createView(),
-        ]);
-    }
-
 }

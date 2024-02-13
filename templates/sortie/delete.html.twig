@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div>
+    {{ form_start(sortieForm) }}
+    {{ form_widget(sortieForm) }}
+    <button>Enregistrer</button>
+    <button>Publier la sortie</button>
+
+   <div> <button>Supprimer la sortie</button>
+       <a href="{{ path('sortie_delete', {'id': sortie.id}) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette sortie ?')">Supprimer</a>
+   </div>
+    <button>Annuler</button>
+
+    {{ form_end(sortieForm) }}
+
+</div>
+{% endblock %}
+
+{% block title %}
+Modifier une  sortie
+{% endblock %}
+

@@ -6,12 +6,14 @@ use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Faker\Factory;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
-class Participant implements UserInterface,PasswordAuthenticatedUserInterface
+#[UniqueEntity(fields: ['identifiant'], message: 'There is already an account with this identifiant')]
+class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -30,37 +32,30 @@ class Participant implements UserInterface,PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
     private ?string $mail = null;
 
-    #[ORM\Column]
-    private ?bool $administrateur = null;
-
-    #[ORM\Column]
-    private ?bool $actif = null;
-
-    #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class, orphanRemoval: true)]
-    private Collection $listeSortiesOrganisees;
-
-    #[ORM\ManyToMany(targetEntity: Sortie::class, mappedBy: 'personnesInscrites')]
-    private Collection $listeSortiesDuParticipant;
-
-    #[ORM\ManyToOne(inversedBy: 'listeEleves')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Campus $campus = null;
-
     #[ORM\Column(length: 255)]
     private ?string $password = null;
+
+    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'listeSortiesOrganisees')]
+    private Collection $listeSortiesOrganisees;
+
+    #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'listeSortiesDuParticipant')]
+    private Collection $listeSortiesDuParticipant;
+
+    #[ORM\ManyToMany(targetEntity: Sortie::class, mappedBy: 'personnesInscrites')]
+    private Collection $personnesInscrites;
 
     public function __construct()
     {
         $this->listeSortiesOrganisees = new ArrayCollection();
         $this->listeSortiesDuParticipant = new ArrayCollection();
+        $this->personnesInscrites = new ArrayCollection();
     }
-
 
     public function getId(): ?int
     {
@@ -77,44 +72,6 @@ class Participant implements UserInterface,PasswordAuthenticatedUserInterface
         $this->identifiant = $identifiant;
 
         return $this;
-    }
-
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->identifiant;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    public function setRoles(array $roles): static
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials(): void
-    {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 
     public function getNom(): ?string
@@ -146,7 +103,7 @@ class Participant implements UserInterface,PasswordAuthenticatedUserInterface
         return $this->telephone;
     }
 
-    public function setTelephone(?string $telephone): static
+    public function setTelephone(string $telephone): static
     {
         $this->telephone = $telephone;
 
@@ -165,28 +122,32 @@ class Participant implements UserInterface,PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isAdministrateur(): ?bool
+    public function getPassword(): ?string
     {
-        return $this->administrateur;
+        return $this->password;
     }
 
-    public function setAdministrateur(bool $administrateur): static
+    public function setPassword(string $password): static
     {
-        $this->administrateur = $administrateur;
+        $this->password = $password;
 
         return $this;
     }
 
-    public function isActif(): ?bool
+    public function getRoles(): array
     {
-        return $this->actif;
+        return ['ROLE_USER'];
     }
 
-    public function setActif(bool $actif): static
+    public function eraseCredentials(): void
     {
-        $this->actif = $actif;
+        // TODO: Implement eraseCredentials() method.
+    }
 
-        return $this;
+    public function getUserIdentifier(): string
+    {
+        return $this->identifiant;
+
     }
 
     /**
@@ -201,7 +162,7 @@ class Participant implements UserInterface,PasswordAuthenticatedUserInterface
     {
         if (!$this->listeSortiesOrganisees->contains($listeSortiesOrganisee)) {
             $this->listeSortiesOrganisees->add($listeSortiesOrganisee);
-            $listeSortiesOrganisee->setOrganisateur($this);
+            $listeSortiesOrganisee->setListeSortiesOrganisees($this);
         }
 
         return $this;
@@ -211,8 +172,8 @@ class Participant implements UserInterface,PasswordAuthenticatedUserInterface
     {
         if ($this->listeSortiesOrganisees->removeElement($listeSortiesOrganisee)) {
             // set the owning side to null (unless already changed)
-            if ($listeSortiesOrganisee->getOrganisateur() === $this) {
-                $listeSortiesOrganisee->setOrganisateur(null);
+            if ($listeSortiesOrganisee->getListeSortiesOrganisees() === $this) {
+                $listeSortiesOrganisee->setListeSortiesOrganisees(null);
             }
         }
 
@@ -231,7 +192,6 @@ class Participant implements UserInterface,PasswordAuthenticatedUserInterface
     {
         if (!$this->listeSortiesDuParticipant->contains($listeSortiesDuParticipant)) {
             $this->listeSortiesDuParticipant->add($listeSortiesDuParticipant);
-            $listeSortiesDuParticipant->addPersonnesInscrite($this);
         }
 
         return $this;
@@ -239,33 +199,34 @@ class Participant implements UserInterface,PasswordAuthenticatedUserInterface
 
     public function removeListeSortiesDuParticipant(Sortie $listeSortiesDuParticipant): static
     {
-        if ($this->listeSortiesDuParticipant->removeElement($listeSortiesDuParticipant)) {
-            $listeSortiesDuParticipant->removePersonnesInscrite($this);
+        $this->listeSortiesDuParticipant->removeElement($listeSortiesDuParticipant);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getPersonnesInscrites(): Collection
+    {
+        return $this->personnesInscrites;
+    }
+
+    public function addPersonnesInscrite(Sortie $personnesInscrite): static
+    {
+        if (!$this->personnesInscrites->contains($personnesInscrite)) {
+            $this->personnesInscrites->add($personnesInscrite);
+            $personnesInscrite->addPersonnesInscrite($this);
         }
 
         return $this;
     }
 
-    public function getCampus(): ?Campus
+    public function removePersonnesInscrite(Sortie $personnesInscrite): static
     {
-        return $this->campus;
-    }
-
-    public function setCampus(?Campus $campus): static
-    {
-        $this->campus = $campus;
-
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
+        if ($this->personnesInscrites->removeElement($personnesInscrite)) {
+            $personnesInscrite->removePersonnesInscrite($this);
+        }
 
         return $this;
     }

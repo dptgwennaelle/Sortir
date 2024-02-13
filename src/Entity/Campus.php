@@ -18,16 +18,12 @@ class Campus
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\OneToMany(mappedBy: 'campus', targetEntity: Sortie::class, orphanRemoval: true)]
-    private Collection $listeSorties;
-
-    #[ORM\OneToMany(mappedBy: 'campus', targetEntity: Participant::class, orphanRemoval: true)]
-    private Collection $listeEleves;
+    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'listesSorties', orphanRemoval: true)]
+    private Collection $campus;
 
     public function __construct()
     {
-        $this->listeSorties = new ArrayCollection();
-        $this->listeEleves = new ArrayCollection();
+        $this->campus = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -50,57 +46,27 @@ class Campus
     /**
      * @return Collection<int, Sortie>
      */
-    public function getListeSorties(): Collection
+    public function getCampus(): Collection
     {
-        return $this->listeSorties;
+        return $this->campus;
     }
 
-    public function addListeSorty(Sortie $listeSorty): static
+    public function addCampus(Sortie $campus): static
     {
-        if (!$this->listeSorties->contains($listeSorty)) {
-            $this->listeSorties->add($listeSorty);
-            $listeSorty->setCampus($this);
+        if (!$this->campus->contains($campus)) {
+            $this->campus->add($campus);
+            $campus->setListesSorties($this);
         }
 
         return $this;
     }
 
-    public function removeListeSorty(Sortie $listeSorty): static
+    public function removeCampus(Sortie $campus): static
     {
-        if ($this->listeSorties->removeElement($listeSorty)) {
+        if ($this->campus->removeElement($campus)) {
             // set the owning side to null (unless already changed)
-            if ($listeSorty->getCampus() === $this) {
-                $listeSorty->setCampus(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Participant>
-     */
-    public function getListeEleves(): Collection
-    {
-        return $this->listeEleves;
-    }
-
-    public function addListeElefe(Participant $listeElefe): static
-    {
-        if (!$this->listeEleves->contains($listeElefe)) {
-            $this->listeEleves->add($listeElefe);
-            $listeElefe->setCampus($this);
-        }
-
-        return $this;
-    }
-
-    public function removeListeElefe(Participant $listeElefe): static
-    {
-        if ($this->listeEleves->removeElement($listeElefe)) {
-            // set the owning side to null (unless already changed)
-            if ($listeElefe->getCampus() === $this) {
-                $listeElefe->setCampus(null);
+            if ($campus->getListesSorties() === $this) {
+                $campus->setListesSorties(null);
             }
         }
 

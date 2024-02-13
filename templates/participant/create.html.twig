@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div>
+    {{ form_start(participantForm) }}
+    {{ form_widget(participantForm) }}
+    <button>Enregistrer</button>
+    <button>Annuler</button>
+    {{ form_end(participantForm) }}
+
+</div>
+{% endblock %}
+
+{% block title %}
+Create a new participant
+{% endblock %}
+

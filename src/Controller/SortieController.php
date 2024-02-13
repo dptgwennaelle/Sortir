@@ -3,38 +3,51 @@
 namespace App\Controller;
 
 use App\Entity\Sortie;
-use App\Form\CreateSortieType;
+use App\Form\SortieType;
 use App\Repository\SortieRepository;
-use App\Repository\WishRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class SortieController extends AbstractController
 {
-    #[Route('/Sortie/', name: 'sortir_home')]
- public function home(){
+    #[Route('/', name: 'sortir_home')]
+    public function home(){
         return $this->render('sortie/home.html.twig', [
-        ]);
- }
-    #[Route('/Sortie/liste', name: 'sortir_liste')]
-    public function liste(SortieRepository $sortieRepository){
-        $sortieList = $sortieRepository->findAll();
-        return $this->render('sortie/liste.html.twig', [
-            'sorties'=>$sortieList
         ]);
     }
 
-    #[Route('/Sortie/create', name: 'sortir_create')]
-    public function create(
-        Request $request,
-        EntityManagerInterface $entityManager,
-    ){
-        $user = $this->getUser()->getUserIdentifier();
+    /*  #[Route('/', name: 'sortir_home')]
+    public function home(){
+        return $this->render('sortie/home.html.twig', [
+        ]);
+    }*/
+
+    // Afficher les détails d'une sortie
+    #[Route('/sortie/details/{id}', name: 'app_sortie_details')]
+    public function details(int $id, SortieRepository $sortieRepository): Response
+    {
+        $sortie = $sortieRepository->find($id);
+
+        if(!$sortie){
+            throw $this->createNotFoundException('Oh no!!!');
+        }
+        return $this->render('sortie/details.html.twig', [
+            "sortie"=> $sortie
+        ]);
+    }
+
+    #[Route('/sortie/create', name: 'sortie_create')]
+    public function create(Request $request,
+                           EntityManagerInterface $entityManager): Response
+    {
         $sortie = new Sortie();
-        $sortie->setOrganisateur($this->getUser());
-        $sortieForm = $this->createForm(CreateSortieType::class, $sortie);
+
+        // Pas besoin de setDateCreated car cette méthode n'existe pas dans votre entité Sortie
+
+        $sortieForm = $this->createForm(SortieType::class, $sortie);
 
         $sortieForm->handleRequest($request);
 
@@ -42,29 +55,22 @@ class SortieController extends AbstractController
             $entityManager->persist($sortie);
             $entityManager->flush();
 
-            return $this->redirectToRoute('sortir_liste', [
-
-            ]);
+            $this->addFlash('success', 'Sortie ajoutée avec succès !');
+            return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
         }
+
         return $this->render('sortie/create.html.twig', [
-            'sortieForm'=>$sortieForm->createView(),
+            'sortieForm' => $sortieForm->createView()
         ]);
     }
 
-    #[Route('/Sortie/delete/{id}', name: 'sortir_delete', requirements: ["id"=>"\d+"])]
-    public function delete(int $id, EntityManagerInterface $entityManager, SortieRepository $sortieRepository){
-        $sortie = $sortieRepository->find($id);
-
-        if (!$sortie) {
-            throw $this->createNotFoundException('Sortie non trouvée avec l\'id '.$id);
-        }
-
-        $sortieList = $sortieRepository->findAll();
+    #[Route('/sortie/delete/{id}', name: 'sortie_delete')]
+    public function delete(Sortie $sortie, EntityManagerInterface $entityManager): Response
+    {
         $entityManager->remove($sortie);
         $entityManager->flush();
+        return $this->redirectToRoute('main_home');
 
-        return $this->render('sortie/liste.html.twig', [
-            'sorties' => $sortieList
-        ]);
     }
+
 }

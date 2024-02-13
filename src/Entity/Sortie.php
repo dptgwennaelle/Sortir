@@ -34,27 +34,30 @@ class Sortie
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $infosSortie = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\ManyToOne(inversedBy: 'campus')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Lieu $lieu = null;
+    private ?Campus $listesSorties = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Etat $etat = null;
+    private ?Etat $sorties = null;
 
-    #[ORM\ManyToOne(inversedBy: 'listeSorties')]
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Campus $campus = null;
+    private ?Lieu $sortie = null;
 
     #[ORM\ManyToOne(inversedBy: 'listeSortiesOrganisees')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Participant $organisateur = null;
+    private ?Participant $listeSortiesOrganisees = null;
 
-    #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'listeSortiesDuParticipant')]
+    #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'listeSortiesDuParticipant')]
+    private Collection $listeSortiesDuParticipant;
+
+    #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'personnesInscrites')]
     private Collection $personnesInscrites;
 
     public function __construct()
     {
+        $this->listeSortiesDuParticipant = new ArrayCollection();
         $this->personnesInscrites = new ArrayCollection();
     }
 
@@ -135,50 +138,77 @@ class Sortie
         return $this;
     }
 
-    public function getLieu(): ?Lieu
+    public function getListesSorties(): ?Campus
     {
-        return $this->lieu;
+        return $this->listesSorties;
     }
 
-    public function setLieu(?Lieu $lieu): static
+    public function setListesSorties(?Campus $listesSorties): static
     {
-        $this->lieu = $lieu;
+        $this->listesSorties = $listesSorties;
 
         return $this;
     }
 
-    public function getEtat(): ?Etat
+    public function getSorties(): ?Etat
     {
-        return $this->etat;
+        return $this->sorties;
     }
 
-    public function setEtat(?Etat $etat): static
+    public function setSorties(?Etat $sorties): static
     {
-        $this->etat = $etat;
+        $this->sorties = $sorties;
 
         return $this;
     }
 
-    public function getCampus(): ?Campus
+    public function getSortie(): ?Lieu
     {
-        return $this->campus;
+        return $this->sortie;
     }
 
-    public function setCampus(?Campus $campus): static
+    public function setSortie(?Lieu $sortie): static
     {
-        $this->campus = $campus;
+        $this->sortie = $sortie;
 
         return $this;
     }
 
-    public function getOrganisateur(): ?Participant
+    public function getListeSortiesOrganisees(): ?Participant
     {
-        return $this->organisateur;
+        return $this->listeSortiesOrganisees;
     }
 
-    public function setOrganisateur(?Participant $organisateur): static
+    public function setListeSortiesOrganisees(?Participant $listeSortiesOrganisees): static
     {
-        $this->organisateur = $organisateur;
+        $this->listeSortiesOrganisees = $listeSortiesOrganisees;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Participant>
+     */
+    public function getListeSortiesDuParticipant(): Collection
+    {
+        return $this->listeSortiesDuParticipant;
+    }
+
+    public function addListeSortiesDuParticipant(Participant $listeSortiesDuParticipant): static
+    {
+        if (!$this->listeSortiesDuParticipant->contains($listeSortiesDuParticipant)) {
+            $this->listeSortiesDuParticipant->add($listeSortiesDuParticipant);
+            $listeSortiesDuParticipant->addListeSortiesDuParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeListeSortiesDuParticipant(Participant $listeSortiesDuParticipant): static
+    {
+        if ($this->listeSortiesDuParticipant->removeElement($listeSortiesDuParticipant)) {
+            $listeSortiesDuParticipant->removeListeSortiesDuParticipant($this);
+        }
 
         return $this;
     }

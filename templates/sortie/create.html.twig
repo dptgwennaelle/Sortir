@@ -1,13 +1,16 @@
 {% extends 'base.html.twig' %}
-{% block css %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/createSortie.css') }}">
-{% endblock %}
+
 {% block body %}
+<div>
     {{ form_start(sortieForm) }}
     {{ form_widget(sortieForm) }}
-    <button>Créer</button>
+    <button>Create!</button>
     {{ form_end(sortieForm) }}
 
+</div>
+{% endblock %}
+
+{% block title %}
+Créer une  sortie
 {% endblock %}
 
