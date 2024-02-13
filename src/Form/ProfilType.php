@@ -23,7 +23,7 @@ class ProfilType extends AbstractType
             ->add('password')
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
-'choice_label' => 'nom',
+                'choice_label' => 'nom',
             ])
             ->add('photo')
         ;

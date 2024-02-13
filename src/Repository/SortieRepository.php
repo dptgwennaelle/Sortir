@@ -21,6 +21,21 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
+    public function findVilles()
+    {
+        $entityManager = $this->getEntityManager();
+        $dql =" SELECT v.id, v.nom
+                FROM App\Entity\Lieu l
+                JOIN l.ville v
+               ";
+        //Première ligne: Sélection des données voulues
+        //Deuxième ligne: Entité principale
+        //Dernières lignes: Fait les liens entre les entités
+
+    }
+
+
+
 //    /**
 //     * @return Sortie[] Returns an array of Sortie objects
 //     */
