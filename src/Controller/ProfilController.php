@@ -44,7 +44,6 @@ class ProfilController extends AbstractController
         EntityManagerInterface $entityManager,
     ): Response
     {
-        $user = $this->getUser()->getUserIdentifier();
         $profil = new Participant();
         $profilForm = $this->createForm(ProfilType::class, $profil);
 
@@ -55,9 +54,9 @@ class ProfilController extends AbstractController
             $entityManager->flush();
 
             //$this->addFlash('Succès', 'Voeux ajouté, bien joué!');
-            return $this->redirectToRoute('profil/create.html.twig', ['id' => $profil->getId()]);
+            return $this->redirectToRoute('profil_liste', ['id' => $profil->getId()]);
         }
-        return $this->render('wish/create.html.twig', [
+        return $this->render('profil/create.html.twig', [
             'profilForm'=>$profilForm->createView(),
         ]);
     }

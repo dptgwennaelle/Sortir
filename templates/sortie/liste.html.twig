@@ -5,29 +5,80 @@
         <tr>
             <td>Nom de la Sortie</td>
             <td>Date de la sortie</td>
+            <td>Délai d'inscription</td>
             <td>Inscriptions</td>
             <td>Etat de la sortie</td>
+            <td>Participation</td>
             <td>Organisateur</td>
+            <td>Action</td>
         </tr>
         {% for sortie in sorties %}
-            <article>
+            {# Calcul de l'ancienneté de la sortie, ne s'affiche que si moins de 30j après date de sortie #}
+            {% set startDate = sortie.dateHeureDebut %}
+            {% set now = "now"|date("m/d/Y H:i", "Europe/Paris") %}
+            {% set difference = date(startDate).diff(date(now)) %}
+            {% set leftDays = difference.days %}
+            {% set leftHours = difference.h %}
+
+            {% if leftDays < 30 %}
+
+        <article>
                 <tr>
+                    {# Nom de la sortie#}
                     <td>{{ sortie.nom }}</td>
-                    <td>{{ sortie.dateHeureDebut | date }}</td>
-                    {# todo : ajouter délais d'inscription #}
-                    {# todo : ajouter le */total des inscris#}
-                    <td>{{ sortie.nbInscriptionsMax }}</td>
+
+                    {# Date de la sortie #}
+                    <td>{{ sortie.dateHeureDebut | date ("d/m/y H:i", "Europe/Paris")}}</td>
+
+                    {# Délai d'inscription #}
+                    {% set startDate = sortie.dateHeureDebut %}
+                    {% set now = "now"|date("m/d/Y", "Europe/Paris") %}
+                    {% set difference = date(startDate).diff(date(now)) %}
+                    {% set leftDays = difference.days %}
+                    {% set leftHours = difference.h %}
+                    <td>{{ leftDays }} jours,
+                        {{ leftHours }} heures</td>
+
+                    {# Inscriptions #}
+                    {% set nbreInscrit = 0 %}
+                    {% for inscrit in sortie %}
+                        {% set nbreInscrit = nbreInscrit + 1 %}
+                    {% endfor %}
+                    <td>{{ nbreInscrit }} / {{ sortie.nbInscriptionsMax }}</td>
+
+                    {# Etat de la sortie #}
                     <td>{{ sortie.etat.libelle }}</td>
-                    {# todo : ajouter colonne inscrit ou non #}
+
+                    {# Participation #}
+                    {% set isParticipant = false %}
+                    {% for inscrit in sortie.personnesInscrites %}
+                        {% if app.user == inscrit %}
+                            {% set isParticipant = true %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if isParticipant %}
+                        <td>Oui</td>
+                    {% else %}
+                        <td>Non</td>
+                    {% endif %}
+
+                    {# Organisateur #}
                     <td>{{ sortie.organisateur.nom }}</td>
-                    {# todo : ajouter onglet Action #}
+
+                    {# Action #}
+                    <td>
+                        {# todo : supprimer une sortie #}
+                        {# todo : intégrer une sortie #}
+                        {# todo : se désister d'une sortie #}
+                        {# todo : modifier une sortie #}
+                    </td>
                 </tr>
             </article>
-            <a href="{{ path('sortir_create') }}" title="Creer une sortie"
-            ><button class="btn btn-lg btn-primary" type="submit">
-                    Créer une sortie
-                </button></a>
-
+            {% endif %}
         {% endfor%}
     </table>
+    <a href="{{ path('sortir_create') }}" title="Creer une sortie"
+    ><button class="btn btn-lg btn-primary" type="submit">
+            Créer une sortie
+        </button></a>
 {% endblock %}
