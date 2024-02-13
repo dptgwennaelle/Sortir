@@ -1,0 +1,13 @@
+{% extends 'base.html.twig'  %}
+{% block title %}Liste des participants {% endblock %}
+{% block body %}
+    <section class="personnesInscrites">
+        {%  for participant in personnesInscrites %}
+            <article>
+                <a href="{{ path('participant_details', {'id':serie.id } )}}" title="Liste des participants à cette sortie: | {{ participant.personnesInscrites|length }}">
+
+                </a>
+            </article>
+        {%endfor%}
+    </section>
+{% endblock %}
