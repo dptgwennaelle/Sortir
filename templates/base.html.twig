@@ -5,13 +5,56 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=yes, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{% block title %}Sortir{% endblock %}</title>
-    <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
-    {% block css%}{% endblock %}
+
+    <title>
+        {% block title %}
+            Sortir
+        {% endblock %}
+    </title>
+
+    {% block css %}
+        <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    {% endblock %}
+
+    {% block font %}
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Abel&family=Handlee&display=swap" rel="stylesheet">
+    {% endblock %}
+
 </head>
 
 <body>
-{% include 'inc/nav.html.twig' %}
-{% block body%} {% endblock %}
+<header>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash flash-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <h1>
+        <a href="{{ path('sortir_home') }}" title="Lien vers la page d'accueil">
+            <img src="{{ asset('img/sortir-logo.png') }}" alt="logo du site">
+        </a>
+    </h1>
+</header>
+{% if app.user %}
+<nav>
+    {% include 'inc/nav.html.twig' %}
+</nav>
+{% endif %}
+
+{% block body %}
+
+{% endblock %}
 </body>
+
+<footer>
+    <img src="{{ asset('img/favicon.png') }}" alt="logo du Site">
+    ©Sortir ENI {{ "now"|date("Y") }}
+</footer>
 </html>
