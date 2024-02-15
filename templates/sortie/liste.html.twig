@@ -80,22 +80,33 @@
 
                         {# Action #}
                         <td>
-                            {% if sortie.organisateur.identifiant == app.user.identifiant %}
+                            {% if sortie.organisateur.identifiant == app.user.identifiant
+                            and sortie.etat.libelle != "Annulé"%}
 
+                                {# Modifier une sortie #}
+                                {% set modifyURL = path('sortir_modifier', {'id': sortie.id}) %}
+                                <a href="{{ modifyURL }}"
+                                   onclick="return confirm('Voulez-vous vraiment modifier la sortie ?')">
+                                    Modifier</a><br>
+
+
+                                {# Annuler la sortie #}
+                                {% set deleteUrl = path('sortir_annuler', {'id': sortie.id}) %}
+                                <a href="{{ deleteUrl }}"
+                                   onclick="return confirm('Voulez-vous vraiment annuler la sortie ?')">
+                                    Annuler la sortie</a><br>
+
+
+                            {% endif %}
+
+                            {% if sortie.organisateur.identifiant == app.user.identifiant%}
                                 {# Supprimer la sortie #}
                                 {% set deleteUrl = path('sortir_delete', {'id': sortie.id}) %}
                                 <a href="{{ deleteUrl }}"
                                    onclick="return confirm('Voulez-vous vraiment supprimer la sortie ?')">
                                     Supprimer</a><br>
 
-                                {# Modifier une sortie #}
-                                {% set modifyURL = path('sortir_delete', {'id': sortie.id}) %}
-                                <a href="{{ modifyURL }}"
-                                   onclick="return confirm('Voulez-vous vraiment modifier la sortie ?')">
-                                    Modifier</a><br>
-
                             {% endif %}
-
 
                             {# Intégrer une sortie #}
                             {% if sortie.etat.libelle == "Ouverte" %}

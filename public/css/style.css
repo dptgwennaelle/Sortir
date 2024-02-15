@@ -173,3 +173,22 @@ nav a:hover {
     color: #3498db;
     background-color: #eddcf7;
 }
+
+/* Ajoutez le style pour la checkbox personnalisée */
+.custom-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    outline: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #3498db; /* Couleur de la bordure */
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Style pour la checkbox cochée */
+.custom-checkbox:checked {
+    background-color: #3498db; /* Couleur de fond lorsque cochée */
+    border: 2px solid #3498db; /* Couleur de la bordure lorsque cochée */
+}

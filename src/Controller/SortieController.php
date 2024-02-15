@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Sortie;
+use App\Form\AnnulationSortieType;
 use App\Form\CreateSortieType;
+use App\Form\ModificationSortieType;
+use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
@@ -161,6 +164,72 @@ class SortieController extends AbstractController
             'lieu' => $lieu,
             'ville'=>$ville,
             'personnesInscrites' => $personnesInscrites,
+        ]);
+    }
+
+    #[Route('/Sortie/modifier/{id}', name: 'sortir_modifier', requirements: ["id"=>"\d+"])]
+    public function modifier(
+        int $id,
+        EntityManagerInterface $entityManager,
+        Request $request,
+        SortieRepository $sortieRepository){
+        $sortie = $sortieRepository->find($id);
+
+        $sortieModifForm = $this->createForm(ModificationSortieType::class, $sortie);
+
+        $sortieModifForm->handleRequest($request);
+
+        if ($sortieModifForm->isSubmitted() && $sortieModifForm->isValid()) {
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            $sortieList = $sortieRepository->findAll();
+            return $this->redirectToRoute('sortir_liste', [
+                'sorties' => $sortieList
+            ]);
+        }
+        if (!$sortie) {
+            throw $this->createNotFoundException('Sortie non trouvée avec l\'id '.$id);
+        }
+
+        return $this->render('sortie/mod.html.twig', [
+            'sortie' => $sortie,
+            'sortieForm'=>$sortieModifForm->createView()
+        ]);
+    }
+
+    #[Route('/Sortie/annuler/{id}', name: 'sortir_annuler', requirements: ["id"=>"\d+"])]
+    public function annuler(
+        int $id,
+        EntityManagerInterface $entityManager,
+        Request $request,
+        SortieRepository $sortieRepository,
+        EtatRepository $etatRepository
+    ){
+        $sortie = $sortieRepository->find($id);
+
+        $sortieAnnulationForm = $this->createForm(AnnulationSortieType::class, $sortie);
+
+        $sortieAnnulationForm->handleRequest($request);
+
+        if ($sortieAnnulationForm->isSubmitted() && $sortieAnnulationForm->isValid()) {
+            $etatAnnule = $etatRepository->findOneBy(['libelle' => 'Annulé']);
+            $sortie->setEtat($etatAnnule);
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            $sortieList = $sortieRepository->findAll();
+            return $this->redirectToRoute('sortir_liste', [
+                'sorties' => $sortieList
+            ]);
+        }
+        if (!$sortie) {
+            throw $this->createNotFoundException('Sortie non trouvée avec l\'id '.$id);
+        }
+
+        return $this->render('sortie/annulation.html.twig', [
+            'sortie' => $sortie,
+            'sortieAnnulationForm'=>$sortieAnnulationForm->createView()
         ]);
     }
 }
