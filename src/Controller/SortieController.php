@@ -10,9 +10,11 @@ use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
 use App\Repository\WishRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class SortieController extends AbstractController
 {
@@ -61,29 +63,79 @@ class SortieController extends AbstractController
         if (!$sortie) {
             throw $this->createNotFoundException('Sortie non trouvée avec l\'id '.$id);
         }
-
-        $sortieList = $sortieRepository->findAll();
         $entityManager->remove($sortie);
         $entityManager->flush();
+        $sortieList = $sortieRepository->findAll();
 
         return $this->render('sortie/liste.html.twig', [
             'sorties' => $sortieList
         ]);
     }
 
-    #[Route('/Sortie/inscrire', name: 'sortir_inscrire')]
+    #[Route('/Sortie/inscrire/{id}', name: 'sortir_inscrire', requirements: ["id"=>"\d+"])]
     public function inscrire(
+        int $id,
         EntityManagerInterface $entityManager,
-        SortieRepository $sortieRepository){
+        SortieRepository $sortieRepository,
+        ParticipantRepository $participantRepository
+    ) {
         $sortie = $sortieRepository->find($id);
 
         if (!$sortie) {
-            throw $this->createNotFoundException('Sortie non trouvée avec l\'id '.$id);
+            throw $this->createNotFoundException('Sortie non trouvée avec l\'id ' . $id);
         }
 
-        $sortieList = $sortieRepository->findAll();
-        $entityManager->remove($sortie);
+        $user = $this->getUser();
+        $participant = $participantRepository->findOneBy(['id' => $user]);
+
+        if (!$participant) {
+            throw $this->createNotFoundException('Participant non trouvé pour l\'utilisateur actuel');
+        }
+
+        $sortie->addPersonnesInscrite($participant);
+        $participant->addListeSortiesDuParticipant($sortie);
+
         $entityManager->flush();
+
+        $sortieList = $sortieRepository->findAll();
+
+        return $this->render('sortie/liste.html.twig', [
+            'sorties' => $sortieList
+        ]);
+    }
+
+    #[Route('/Sortie/desister/{id}', name: 'sortir_desister', requirements: ["id"=>"\d+"])]
+    public function desister(
+        int $id,
+        EntityManagerInterface $entityManager,
+        SortieRepository $sortieRepository,
+        ParticipantRepository $participantRepository
+    ) {
+        $sortie = $sortieRepository->find($id);
+
+        if (!$sortie) {
+            throw $this->createNotFoundException('Sortie non trouvée avec l\'id ' . $id);
+        }
+
+        $user = $this->getUser();
+        $participant = $participantRepository->findOneBy(['id' => $user]);
+
+        if (!$participant) {
+            throw $this->createNotFoundException('Participant non trouvé pour l\'utilisateur actuel');
+        }
+        $participantDansLaSortie = $sortie->getPersonnesInscrites();
+        $listeDesSortiesDuParticipant = $participant->getListeSortiesDuParticipant();
+
+        if ($participantDansLaSortie->contains($participant)) {
+            $participantDansLaSortie->removeElement($participant);
+        }
+
+        if ($listeDesSortiesDuParticipant->contains($sortie)) {
+            $listeDesSortiesDuParticipant->removeElement($sortie);
+        }
+        $entityManager->flush();
+
+        $sortieList = $sortieRepository->findAll();
 
         return $this->render('sortie/liste.html.twig', [
             'sorties' => $sortieList

@@ -9,7 +9,7 @@
         <tr>
             <td>Nom de la Sortie</td>
             <td>Date de la sortie</td>
-            <td>Délai d'inscription</td>
+            <td>Délai d'inscription restant</td>
             <td>Inscriptions</td>
             <td>Etat de la sortie</td>
             <td>Participation</td>
@@ -17,17 +17,13 @@
             <td>Action</td>
         </tr>
         {% for sortie in sorties %}
+            {% set dateDebut = sortie.dateHeureDebut|date("m/d/Y H:i", "Europe/Paris") %}
+            {% set aujourdhui = "now"|date("m/d/Y H:i", "Europe/Paris") %}
+            {% set difference = dateDebut|date_modify("-30 days") %}
 
-            {# Calcul de l'ancienneté de la sortie, ne s'affiche que si moins de 30j après date de sortie #}
-            {% set startDate = sortie.dateHeureDebut %}
-            {% set now = "now"|date("m/d/Y H:i", "Europe/Paris") %}
-            {% set difference = date(startDate).diff(date(now)) %}
-            {% set leftDays = difference.days %}
-            {% set leftHours = difference.h %}
+            {% if dateDebut <= difference and dateDebut >= aujourdhui %}
 
-            {% if leftDays < 30 %}
-
-                <article>
+                    <article>
                     <tr>
                         {# Nom de la sortie #}
                         <td>
@@ -35,19 +31,24 @@
                         </td>
 
 
-
                         {# Date de la sortie #}
                         <td>{{ sortie.dateHeureDebut | date ("d/m/y H:i", "Europe/Paris") }}</td>
 
                         {# Délai d'inscription #}
-                        {% set startDate = sortie.dateHeureDebut %}
+
+                        {% set endDate = sortie.dateLimiteInscription|date("m/d/Y H:i", "Europe/Paris") %}
                         {% set now = "now"|date("m/d/Y", "Europe/Paris") %}
-                        {% set difference = date(startDate).diff(date(now)) %}
+                        {% set difference = date(now).diff(date(endDate)) %}
                         {% set leftDays = difference.days %}
                         {% set leftHours = difference.h %}
-                        <td>{{ leftDays }} jours,
-                            {{ leftHours }} heures
-                        </td>
+                        {% set leftMonth = difference.m %}
+                        {% if difference.invert %}
+                            {# La date d'aujourd'hui est plus ancienne que la date limite d'inscription #}
+                            <td>Inscription déjà clôturée</td>
+                        {% else %}
+                            {# La date d'aujourd'hui est égale ou postérieure à la date limite d'inscription #}
+                            <td>{{ leftDays }} jours, {{ leftHours }} heures, {{ leftMonth }} mois restants</td>
+                        {% endif %}
 
                         {# Inscriptions #}
                         {% set nbreInscrit = sortie.personnesInscrites.count %}
@@ -80,50 +81,52 @@
                         {# Action #}
                         <td>
                             {% if sortie.organisateur.identifiant == app.user.identifiant %}
+
                                 {# Supprimer la sortie #}
                                 {% set deleteUrl = path('sortir_delete', {'id': sortie.id}) %}
                                 <a href="{{ deleteUrl }}"
                                    onclick="return confirm('Voulez-vous vraiment supprimer la sortie ?')">
-                                    Supprimer</a>
+                                    Supprimer</a><br>
 
-                                {# todo : modifier une sortie #}
+                                {# Modifier une sortie #}
                                 {% set modifyURL = path('sortir_delete', {'id': sortie.id}) %}
                                 <a href="{{ modifyURL }}"
                                    onclick="return confirm('Voulez-vous vraiment modifier la sortie ?')">
-                                    Modifier</a>
+                                    Modifier</a><br>
 
                             {% endif %}
 
-                            {% for inscrit in sortie.personnesInscrites %}
-                                {% if sortie.personnesInscrites.contains(app.user) %}
-                                    {% set desinscrireURL = path('sortir_delete', {'id': sortie.id}) %}
-                                    <a href="{{ desinscrireURL }}"
-                                       onclick="return confirm('Voulez-vous vraiment vous désinscrire de la sortie ?')">
-                                        Se désister</a>
-                                {% endif %}
-                            {% endfor %}
 
-
-                            {# todo : intégrer une sortie #}
                             {# Intégrer une sortie #}
                             {% if sortie.etat.libelle == "Ouverte" %}
                                 {% if nbreInscrit < sortie.nbInscriptionsMax %}
                                     {% if not sortie.personnesInscrites.contains(app.user) %}
                                         {% if sortie.organisateur.identifiant != app.user.identifiant %}
-                                        <a href="{{ path('sortir_inscrire', {'id': sortie.id}) }}"
-                                           onclick="return confirm('Voulez-vous vraiment vous inscrire à la sortie ?')">
-                                            S'inscrire</a>
+                                            {% if not difference.invert %}
+                                                <a href="{{ path('sortir_inscrire', {'id': sortie.id}) }}"
+                                                   onclick="return confirm('Voulez-vous vraiment vous inscrire à la sortie ?')">
+                                                    S'inscrire</a><br>
+                                            {% endif %}
+                                        {% endif %}
                                     {% endif %}
                                 {% endif %}
                             {% endif %}
-                            {% endif %}
 
-                            {# todo : se désister d'une sortie #}
+                            {# Se désister d'une sortie #}
+                            {% for inscrit in sortie.personnesInscrites %}
+                                {% if sortie.personnesInscrites.contains(app.user) %}
+                                    {% set desinscrireURL = path('sortir_desister', {'id': sortie.id}) %}
+                                    <a href="{{ desinscrireURL }}"
+                                       onclick="return confirm('Voulez-vous vraiment vous désinscrire de la sortie ?')">
+                                        Se désister</a><br>
+                                {% endif %}
+                            {% endfor %}
 
                         </td>
                     </tr>
                 </article>
 
+{#            {% endif %}#}
             {% endif %}
         {% endfor %}
     </table>
