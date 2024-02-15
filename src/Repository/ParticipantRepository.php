@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Participant;
+use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
@@ -25,6 +26,16 @@ class ParticipantRepository extends ServiceEntityRepository
     public function findOneByIdentifiant($identifiant): ?Participant
     {
         return $this->findOneBy(['identifiant' => $identifiant]);
+    }
+
+    public function findBySortie(Sortie $sortie)
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.listeSortiesDuParticipant', 's')
+            ->where(':sortie MEMBER OF p.listeSortiesDuParticipant')
+            ->setParameter('sortie', $sortie)
+            ->getQuery()
+            ->getResult();
     }
 
 

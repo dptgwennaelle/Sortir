@@ -1,1 +1,35 @@
 {% extends 'base.html.twig' %}
+
+{% block css %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/profilcss.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div><img src="" alt=""></div>
+    <div class="profil">
+        <h1>{{ profil.identifiant }}</h1>
+        <div class="ligneProfil">
+            <h5>Prénom</h5>
+            <p class="bordureP"> {{ profil.prenom }}</p>
+        </div>
+        <div class="ligneProfil">
+            <h5>Nom</h5>
+            <p class="bordureP">{{ profil.nom }}</p>
+        </div>
+        <div class="ligneProfil">
+            <h5>Téléphone</h5>
+            <p class="bordureP">{{ profil.telephone }}</p>
+        </div>
+        <div class="ligneProfil">
+            <h5>Mail</h5>
+            <p class="bordureP">{{ profil.mail }}</p>
+        </div>
+        <div class="ligneProfil">
+            <h5>Campus</h5>
+            <p class="bordureP">{{ profil.campus.nom }}</p>
+        </div>
+
+    </div>
+{% endblock %}
+

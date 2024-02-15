@@ -1,12 +1,12 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #edf5ff; /* Bleu ciel très pâle */
+    background-color: #edf5ff;
     margin: 0% 0% 8% 0%;
     padding: 0;
 }
 
 header {
-    background-color: #aedfff; /* Bleu ciel pâle */
+    background-color: #aedfff;
     padding: 20px;
     text-align: center;
 }
@@ -18,13 +18,13 @@ header {
 }
 
 .flash-success {
-    background-color: #87cefa; /* Bleu clair - Success */
-    color: #008000; /* Vert foncé */
+    background-color: #87cefa;
+    color: #008000;
 }
 
 .flash-error {
-    background-color: #ffb6c1; /* Rose pâle - Error */
-    color: #ff0000; /* Rouge */
+    background-color: #ffb6c1;
+    color: #ff0000;
 }
 
 h1 a {
@@ -32,10 +32,10 @@ h1 a {
 }
 
 nav {
-    background-color: #c0e4fa; /* Bleu ciel - Navigation */
+    background-color: #c0e4fa;
     padding: 10px;
     display: flex;
-    justify-content: space-around; /* Ajusté pour une seule ligne */
+    justify-content: space-around;
     align-items: center;
 }
 
@@ -52,18 +52,18 @@ nav li {
 
 nav a {
     text-decoration: none;
-    color: #0070d0; /* Bleu moyen */
+    color: #0070d0;
     font-size: 16px;
     transition: color 0.3s ease-in-out;
 }
 
 nav a:hover {
-    color: #3498db; /* Bleu plus foncé au survol */
+    color: #3498db;
 }
 
 footer {
-    background-color: #aedfff; /* Bleu ciel pâle */
-    color: #333; /* Texte sombre */
+    background-color: #aedfff;
+    color: #333;
     padding: 20px;
     text-align: center;
     position: fixed;
@@ -77,10 +77,9 @@ footer img {
     margin-right: 5px;
 }
 
-/* Styles spécifiques pour le formulaire de connexion */
 form {
     font-family: 'Handlee', cursive;
-    max-width:26%;
+    max-width: 26%;
     margin: 5% 37% 5% 37%;
     padding: 1%;
     background-color: #fff;
@@ -93,7 +92,7 @@ form {
 }
 
 .btn-primary {
-    background-color: #0070d0; /* Bleu moyen - Bouton principal */
+    background-color: #0070d0;
     color: #fff;
     border: none;
     padding: 10px 15px;
@@ -103,34 +102,34 @@ form {
 }
 
 .btn-primary:hover {
-    background-color: #3498db; /* Bleu plus foncé au survol */
+    background-color: #3498db;
 }
 
-form label{
+form label {
     font-family: 'Handlee', cursive;
     display: flex;
     flex-direction: column;
 }
 
-form input{
+form input {
     width: 90%;
     margin: 1% 5%;
 }
 
-form button{
+form button {
     width: 30%;
     background-color: #3498db;
     margin: 1% 35%;
 }
 
 table {
-    width: 100%;
+    width: 70%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin: 20px auto;
 }
 
 table, th, td {
-    border: 1px solid #dcdcdc; /* Bordures grises */
+    border: 1px solid #dcdcdc;
 }
 
 th, td {
@@ -139,15 +138,38 @@ th, td {
 }
 
 th {
-    background-color: #3498db; /* Bleu plus foncé - Fond pour les entêtes */
+    background-color: #3498db;
     color: #fff;
 }
 
 tr:hover {
-    background-color: #f5f5f5; /* Gris clair au survol des lignes */
+    background-color: #f5f5f5;
 }
 
 article {
     display: block;
     margin-bottom: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: #0070d0;
+    font-size: 16px;
+    transition: color 0.3s ease-in-out;
+}
+
+a:hover {
+    color: #3498db;
+}
+
+nav a {
+    color: #0070d0;
+    background-color: transparent;
+    padding: 5px 10px;
+    border-radius: 3px;
+}
+
+nav a:hover {
+    color: #3498db;
+    background-color: #eddcf7;
 }

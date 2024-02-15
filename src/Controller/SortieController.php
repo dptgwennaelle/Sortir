@@ -4,7 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Sortie;
 use App\Form\CreateSortieType;
+use App\Repository\LieuRepository;
+use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
+use App\Repository\VilleRepository;
 use App\Repository\WishRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -65,6 +68,47 @@ class SortieController extends AbstractController
 
         return $this->render('sortie/liste.html.twig', [
             'sorties' => $sortieList
+        ]);
+    }
+
+    #[Route('/Sortie/inscrire', name: 'sortir_inscrire')]
+    public function inscrire(
+        EntityManagerInterface $entityManager,
+        SortieRepository $sortieRepository){
+        $sortie = $sortieRepository->find($id);
+
+        if (!$sortie) {
+            throw $this->createNotFoundException('Sortie non trouvée avec l\'id '.$id);
+        }
+
+        $sortieList = $sortieRepository->findAll();
+        $entityManager->remove($sortie);
+        $entityManager->flush();
+
+        return $this->render('sortie/liste.html.twig', [
+            'sorties' => $sortieList
+        ]);
+    }
+
+    #[Route('/Sortie/details/{id}', name:'sortir_details')]
+    public function details(int $id, SortieRepository $sortieRepository, LieuRepository $lieuRepository,
+                            ParticipantRepository $participantRepository, VilleRepository $villeRepository)
+    {
+        $sortie = $sortieRepository->find($id);
+        // Vérification de l'existence de la sortie
+        if (!$sortie) {
+            throw $this->createNotFoundException('Sortie non trouvée');
+        }
+        // Code pour récupérer les détails de la sortie, y compris le lieu associé
+        $lieu = $sortie->getLieu();
+        $ville = $lieu->getVille();
+        $personnesInscrites = $participantRepository->findBySortie($sortie);
+
+        return $this->render('sortie/details.html.twig', [
+            'sortie' => $sortie,
+            'lieu' => $lieu,
+            'ville'=>$ville,
+            'personnesInscrites' => $personnesInscrites,
         ]);
     }
 }
