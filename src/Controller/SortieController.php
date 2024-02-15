@@ -6,6 +6,7 @@ use App\Entity\Sortie;
 use App\Form\AnnulationSortieType;
 use App\Form\CreateSortieType;
 use App\Form\ModificationSortieType;
+use App\Form\SortieFilterType;
 use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
@@ -26,9 +27,20 @@ class SortieController extends AbstractController
         ]);
  }
     #[Route('/Sortie/liste', name: 'sortir_liste')]
-    public function liste(SortieRepository $sortieRepository){
-        $sortieList = $sortieRepository->findAll();
+    public function liste(SortieRepository $sortieRepository, Request $request){
+        $form = $this->createForm(SortieFilterType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            $sortieList = $sortieRepository->findFilteredSorties($data);
+        } else {
+            $sortieList = $sortieRepository->findAll();
+        }
+
         return $this->render('sortie/liste.html.twig', [
+            'form' => $form->createView(),
             'sorties'=>$sortieList
         ]);
     }
@@ -69,8 +81,8 @@ class SortieController extends AbstractController
         $entityManager->flush();
         $sortieList = $sortieRepository->findAll();
 
-        return $this->render('sortie/liste.html.twig', [
-            'sorties' => $sortieList
+        return $this->redirectToRoute('sortir_liste', [
+
         ]);
     }
 
@@ -101,8 +113,8 @@ class SortieController extends AbstractController
 
         $sortieList = $sortieRepository->findAll();
 
-        return $this->render('sortie/liste.html.twig', [
-            'sorties' => $sortieList
+        return $this->redirectToRoute('sortir_liste', [
+
         ]);
     }
 
@@ -139,8 +151,8 @@ class SortieController extends AbstractController
 
         $sortieList = $sortieRepository->findAll();
 
-        return $this->render('sortie/liste.html.twig', [
-            'sorties' => $sortieList
+        return $this->redirectToRoute('sortir_liste', [
+
         ]);
     }
 
@@ -184,7 +196,7 @@ class SortieController extends AbstractController
 
             $sortieList = $sortieRepository->findAll();
             return $this->redirectToRoute('sortir_liste', [
-                'sorties' => $sortieList
+
             ]);
         }
         if (!$sortie) {
@@ -219,7 +231,7 @@ class SortieController extends AbstractController
 
             $sortieList = $sortieRepository->findAll();
             return $this->redirectToRoute('sortir_liste', [
-                'sorties' => $sortieList
+
             ]);
         }
         if (!$sortie) {

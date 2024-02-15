@@ -5,6 +5,9 @@
 {% endblock %}
 
 {% block body %}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
     <table>
         <tr>
             <td>Nom de la Sortie</td>
