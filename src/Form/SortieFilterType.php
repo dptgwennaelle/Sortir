@@ -21,14 +21,22 @@ class SortieFilterType extends AbstractType
             ->add('campus', EntityType::class, [
                 'required' => false,
                 'class' => Campus::class,
+                'label'=>"Campus : ",
                 'choice_label' => 'nom'])
-            ->add('nom', TextType::class, ['required' => false])
-            ->add('dateDebut', DateType::class, ['required' => false])
-            ->add('dateFin', DateType::class, ['required' => false])
-            ->add('organisateur', CheckboxType::class, ['required' => false])
-            ->add('participant', CheckboxType::class, ['required' => false])
-            ->add('nonInscrit', CheckboxType::class, ['required' => false])
-            ->add('sortiePassee', CheckboxType::class, ['required' => false])
+            ->add('nom', TextType::class, ['required' => false,
+                'label'=>"Nom : "])
+            ->add('dateDebut', DateType::class, ['required' => false,
+                'label'=>"Entre : "])
+            ->add('dateFin', DateType::class, ['required' => false,
+                'label'=>"Et : "])
+//            ->add('organisateur', CheckboxType::class, ['required' => false,
+//                'label'=>"Sortie dont je suis l'organisateur/trice : "])
+//            ->add('participant', CheckboxType::class, ['required' => false,
+//                'label'=>"Sorties auxquelles je suis inscrit/e : "])
+//            ->add('nonInscrit', CheckboxType::class, ['required' => false,
+//                'label'=>"Sortie dont je ne suis pas inscrit/e : "])
+//            ->add('sortiePassee', CheckboxType::class, ['required' => false,
+//                'label'=>"Sorties passées"])
             ->add('rechercher', SubmitType::class);
     }
 

@@ -6,8 +6,19 @@
 
 {% block body %}
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+
+    {{ form_row(form.campus, {'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.dateDebut, {'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.dateFin, {'attr': {'class': 'form-control'}}) }}
+{#    {{ form_row(form.organisateur, {'attr': {'class': 'form-check-input'}}) }}#}
+{#    {{ form_row(form.participant, {'attr': {'class': 'form-check-input'}}) }}#}
+{#    {{ form_row(form.nonInscrit, {'attr': {'class': 'form-check-input'}}) }}#}
+{#    {{ form_row(form.sortiePassee, {'attr': {'class': 'form-check-input'}}) }}#}
+{#    {{ form_row(form.rechercher, {'attr': {'class': 'btn btn-primary'}}) }}#}
+
     {{ form_end(form) }}
+
     <table>
         <tr>
             <td>Nom de la Sortie</td>
