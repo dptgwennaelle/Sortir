@@ -22,8 +22,8 @@ class Sortie
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTimeInterface $duree = null;
+    #[ORM\Column]
+    private ?int $duree = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateLimiteInscription = null;
@@ -36,25 +36,26 @@ class Sortie
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
+    private ?Lieu $lieu = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Etat $etat = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sorties')]
-    private ?Campus $siteOrganisateur = null;
+    #[ORM\ManyToOne(inversedBy: 'listeSorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Campus $campus = null;
 
-    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\ManyToOne(inversedBy: 'listeSortiesOrganisees')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Participant $organisateur = null;
 
-    #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'inscriptionSortie')]
-    private Collection $participantsInscrits;
-
-    #[ORM\ManyToOne(inversedBy: 'sorties')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Lieu $lieu = null;
+    #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'listeSortiesDuParticipant')]
+    private Collection $personnesInscrites;
 
     public function __construct()
     {
-        $this->participantsInscrits = new ArrayCollection();
+        $this->personnesInscrites = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -86,12 +87,12 @@ class Sortie
         return $this;
     }
 
-    public function getDuree(): ?\DateTimeInterface
+    public function getDuree(): ?int
     {
         return $this->duree;
     }
 
-    public function setDuree(\DateTimeInterface $duree): static
+    public function setDuree(int $duree): static
     {
         $this->duree = $duree;
 
@@ -134,6 +135,18 @@ class Sortie
         return $this;
     }
 
+    public function getLieu(): ?Lieu
+    {
+        return $this->lieu;
+    }
+
+    public function setLieu(?Lieu $lieu): static
+    {
+        $this->lieu = $lieu;
+
+        return $this;
+    }
+
     public function getEtat(): ?Etat
     {
         return $this->etat;
@@ -146,14 +159,14 @@ class Sortie
         return $this;
     }
 
-    public function getsiteOrganisateur(): ?Campus
+    public function getCampus(): ?Campus
     {
-        return $this->siteOrganisateur;
+        return $this->campus;
     }
 
-    public function setsiteOrganisateur(?Campus $siteOrganisateur): static
+    public function setCampus(?Campus $campus): static
     {
-        $this->siteOrganisateur = $siteOrganisateur;
+        $this->campus = $campus;
 
         return $this;
     }
@@ -173,35 +186,23 @@ class Sortie
     /**
      * @return Collection<int, Participant>
      */
-    public function getParticipantsInscrits(): Collection
+    public function getPersonnesInscrites(): Collection
     {
-        return $this->participantsInscrits;
+        return $this->personnesInscrites;
     }
 
-    public function addParticipantsInscrit(Participant $participantsInscrit): static
+    public function addPersonnesInscrite(Participant $personnesInscrite): static
     {
-        if (!$this->participantsInscrits->contains($participantsInscrit)) {
-            $this->participantsInscrits->add($participantsInscrit);
+        if (!$this->personnesInscrites->contains($personnesInscrite)) {
+            $this->personnesInscrites->add($personnesInscrite);
         }
 
         return $this;
     }
 
-    public function removeParticipantsInscrit(Participant $participantsInscrit): static
+    public function removePersonnesInscrite(Participant $personnesInscrite): static
     {
-        $this->participantsInscrits->removeElement($participantsInscrit);
-
-        return $this;
-    }
-
-    public function getLieu(): ?Lieu
-    {
-        return $this->lieu;
-    }
-
-    public function setLieu(?Lieu $lieu): static
-    {
-        $this->lieu = $lieu;
+        $this->personnesInscrites->removeElement($personnesInscrite);
 
         return $this;
     }

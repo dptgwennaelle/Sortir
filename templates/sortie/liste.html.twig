@@ -1,0 +1,164 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/listeSortie.css') }}">
+{% endblock %}
+
+{% block body %}
+    {{ form_start(form) }}
+
+    {{ form_row(form.campus, {'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.dateDebut, {'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.dateFin, {'attr': {'class': 'form-control'}}) }}
+{#    {{ form_row(form.organisateur, {'attr': {'class': 'form-check-input'}}) }}#}
+{#    {{ form_row(form.participant, {'attr': {'class': 'form-check-input'}}) }}#}
+{#    {{ form_row(form.nonInscrit, {'attr': {'class': 'form-check-input'}}) }}#}
+{#    {{ form_row(form.sortiePassee, {'attr': {'class': 'form-check-input'}}) }}#}
+{#    {{ form_row(form.rechercher, {'attr': {'class': 'btn btn-primary'}}) }}#}
+
+    {{ form_end(form) }}
+
+    <table>
+        <tr>
+            <td>Nom de la Sortie</td>
+            <td>Date de la sortie</td>
+            <td>Délai d'inscription restant</td>
+            <td>Inscriptions</td>
+            <td>Etat de la sortie</td>
+            <td>Participation</td>
+            <td>Organisateur</td>
+            <td>Action</td>
+        </tr>
+        {% for sortie in sorties %}
+            {% set dateDebut = sortie.dateHeureDebut|date("m/d/Y H:i", "Europe/Paris") %}
+            {% set aujourdhui = "now"|date("m/d/Y H:i", "Europe/Paris") %}
+            {% set difference = dateDebut|date_modify("-30 days") %}
+
+            {% if dateDebut <= difference and dateDebut >= aujourdhui %}
+
+                    <article>
+                    <tr>
+                        {# Nom de la sortie #}
+                        <td>
+                            <a href="{{ path('sortir_details', {'id': sortie.id}) }}">{{ sortie.nom }}</a>
+                        </td>
+
+
+                        {# Date de la sortie #}
+                        <td>{{ sortie.dateHeureDebut | date ("d/m/y H:i", "Europe/Paris") }}</td>
+
+                        {# Délai d'inscription #}
+
+                        {% set endDate = sortie.dateLimiteInscription|date("m/d/Y H:i", "Europe/Paris") %}
+                        {% set now = "now"|date("m/d/Y", "Europe/Paris") %}
+                        {% set difference = date(now).diff(date(endDate)) %}
+                        {% set leftDays = difference.days %}
+                        {% set leftHours = difference.h %}
+                        {% set leftMonth = difference.m %}
+                        {% if difference.invert %}
+                            {# La date d'aujourd'hui est plus ancienne que la date limite d'inscription #}
+                            <td>Inscription déjà clôturée</td>
+                        {% else %}
+                            {# La date d'aujourd'hui est égale ou postérieure à la date limite d'inscription #}
+                            <td>{{ leftDays }} jours, {{ leftHours }} heures, {{ leftMonth }} mois restants</td>
+                        {% endif %}
+
+                        {# Inscriptions #}
+                        {% set nbreInscrit = sortie.personnesInscrites.count %}
+                        <td>{{ nbreInscrit }} / {{ sortie.nbInscriptionsMax }}</td>
+
+                        {# Etat de la sortie #}
+                        <td>{{ sortie.etat.libelle }}</td>
+
+                        {# Participation #}
+                        {% set isParticipant = false %}
+                        {% for inscrit in sortie.personnesInscrites %}
+                            {% if app.user == inscrit %}
+                                {% set isParticipant = true %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if isParticipant %}
+                            <td>Oui</td>
+                        {% else %}
+                            <td>Non</td>
+                        {% endif %}
+
+                        {# Organisateur #}
+
+                        <td>
+                            <a href="{{ path('profil_detail', {'id': sortie.organisateur.id}) }}">
+                                {{ sortie.organisateur.nom }}
+                            </a>
+                        </td>
+
+                        {# Action #}
+                        <td>
+                            {% if sortie.organisateur.identifiant == app.user.identifiant
+                            and sortie.etat.libelle != "Annulé"%}
+
+                                {# Modifier une sortie #}
+                                {% set modifyURL = path('sortir_modifier', {'id': sortie.id}) %}
+                                <a href="{{ modifyURL }}"
+                                   onclick="return confirm('Voulez-vous vraiment modifier la sortie ?')">
+                                    Modifier</a><br>
+
+
+                                {# Annuler la sortie #}
+                                {% set deleteUrl = path('sortir_annuler', {'id': sortie.id}) %}
+                                <a href="{{ deleteUrl }}"
+                                   onclick="return confirm('Voulez-vous vraiment annuler la sortie ?')">
+                                    Annuler la sortie</a><br>
+
+
+                            {% endif %}
+
+                            {% if sortie.organisateur.identifiant == app.user.identifiant%}
+                                {# Supprimer la sortie #}
+                                {% set deleteUrl = path('sortir_delete', {'id': sortie.id}) %}
+                                <a href="{{ deleteUrl }}"
+                                   onclick="return confirm('Voulez-vous vraiment supprimer la sortie ?')">
+                                    Supprimer</a><br>
+
+                            {% endif %}
+
+                            {# Intégrer une sortie #}
+                            {% if sortie.etat.libelle == "Ouverte" %}
+                                {% if nbreInscrit < sortie.nbInscriptionsMax %}
+                                    {% if not sortie.personnesInscrites.contains(app.user) %}
+                                        {% if sortie.organisateur.identifiant != app.user.identifiant %}
+                                            {% if not difference.invert %}
+                                                <a href="{{ path('sortir_inscrire', {'id': sortie.id}) }}"
+                                                   onclick="return confirm('Voulez-vous vraiment vous inscrire à la sortie ?')">
+                                                    S'inscrire</a><br>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+
+                            {# Se désister d'une sortie #}
+                            {% for inscrit in sortie.personnesInscrites %}
+                                {% if sortie.personnesInscrites.contains(app.user) %}
+                                    {% set desinscrireURL = path('sortir_desister', {'id': sortie.id}) %}
+                                    <a href="{{ desinscrireURL }}"
+                                       onclick="return confirm('Voulez-vous vraiment vous désinscrire de la sortie ?')">
+                                        Se désister</a><br>
+                                {% endif %}
+                            {% endfor %}
+
+                        </td>
+                    </tr>
+                </article>
+
+{#            {% endif %}#}
+            {% endif %}
+        {% endfor %}
+    </table>
+    <a href="{{ path('sortir_create') }}" title="Creer une sortie"
+    >
+        <button class="btn btn-lg btn-primary" type="submit">
+            Créer une sortie
+        </button>
+    </a>
+{% endblock %}

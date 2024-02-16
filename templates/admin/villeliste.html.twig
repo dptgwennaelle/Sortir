@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block css %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/ville.css') }}">
+{% endblock %}
+
+{% block body %}
+    <h3>Filtrer les villes</h3>
+
+    <div class="formVille">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit">Rechercher</button>
+        {{ form_end(form) }}
+    </div>
+
+    <table class="table-container">
+    <tr>
+        <td>Ville</td>
+        <td>Code Postal</td>
+        <td>Actions</td>
+    </tr>
+    {% for ville in villes %}
+            <tr>
+                <td>{{ ville.nom }}</td>
+                <td>{{ ville.codePostal }}</td>
+                <td> A COMPLETER</td>
+            </tr>
+
+    {% endfor %}
+    </table>
+
+    <a href="{{ path('admin_villecreate') }}" title="Creer une ville"
+    ><button class="btn btn-lg btn-primary" type="submit">
+            Ajouter une ville
+        </button></a>
+{% endblock %}

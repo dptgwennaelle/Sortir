@@ -21,43 +21,24 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
-    public function findVilles()
+    public function findFilteredSorties(array $criteria)
     {
-        $entityManager = $this->getEntityManager();
-        $dql =" SELECT v.id, v.nom
-                FROM App\Entity\Lieu l
-                JOIN l.ville v
-               ";
-        //Première ligne: Sélection des données voulues
-        //Deuxième ligne: Entité principale
-        //Dernières lignes: Fait les liens entre les entités
+        // Implémentez la logique de filtrage ici en fonction des critères fournis.
+        // Retournez un tableau de sorties filtrées.
 
+        // Exemple simple (vous devez adapter cela en fonction de votre modèle de données) :
+        $queryBuilder = $this->createQueryBuilder('s');
+
+        if (!empty($criteria['campus'])) {
+            $queryBuilder->andWhere('s.campus = :campus')->setParameter('campus', $criteria['campus']);
+        }
+
+        if (!empty($criteria['nom'])) {
+            $queryBuilder->andWhere('s.nom LIKE :nom')->setParameter('nom', '%' . $criteria['nom'] . '%');
+        }
+
+        // ... Ajoutez d'autres conditions en fonction des autres critères.
+
+        return $queryBuilder->getQuery()->getResult();
     }
-
-
-
-//    /**
-//     * @return Sortie[] Returns an array of Sortie objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Sortie
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

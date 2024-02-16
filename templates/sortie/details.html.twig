@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/detailSortie.css') }}">
+{% endblock %}
+
+{% block body %}
+
+    <div class="sortie-details-infos">
+        <h1>Détails de la sortie : </h1>
+        <div><strong>Nom :</strong> {{ sortie.nom }}</div>
+        <div><strong>Date et heure :</strong> {{ sortie.dateHeureDebut |date('d/m/y H:i') }}</div>
+        <div><strong>Date limite d'inscription :</strong> {{ sortie.dateLimiteInscription | date('d/m/y H:i') }}</div>
+
+        {# Calcul du nombre de places restantes #}
+        {% set nbPlace = sortie.nbInscriptionsMax %}
+        {% set inscrits = sortie.personnesInscrites.count %}
+        {% set placesRestantes = nbPlace - inscrits %}
+
+        <div><strong>Nombre de places :</strong> {{ placesRestantes }}</div>
+        <div><strong>Durée :</strong> {{ sortie.duree }} minutes </div>
+        {% if sortie.infosSortie %}
+            <div><strong>Description :</strong> {{ sortie.infosSortie }}</div>
+        {% endif %}
+        <div><strong>Campus :</strong> {{ sortie.campus.nom }}</div>
+        <div><strong>Lieu:</strong> {{ lieu.ville.nom }}</div>
+        <div><strong>Code postal :</strong> {{ ville.codePostal }}</div>
+        {% if lieu.latitude %}
+        <div><strong>Latitude :</strong> {{ lieu.latitude }}</div>
+        {% endif %}
+        {% if lieu.longitude %}
+        <div><strong>Longitude :</strong> {{ lieu.longitude }}</div>
+        {% endif %}
+
+
+
+
+        {# Liste des participants #}
+        <div class="participant-list">
+
+        <table>
+            <caption>
+                <strong>
+                    Liste des participants inscrits :
+                </strong>
+            </caption>
+            <tr>
+                <td>Pseudo</td>
+                <td>Nom</td>
+
+            </tr>
+            <article>
+                {# Nom du participant #}
+                {% for personne in personnesInscrites %}
+                    <tr>
+                        <td>{{ personne.identifiant }}</td>
+                        <td>{{ personne.nom }}</td>
+                    </tr>
+                {% endfor %}
+
+            </article>
+
+        </table>
+        </div>
+
+    </div>
+{% endblock %}

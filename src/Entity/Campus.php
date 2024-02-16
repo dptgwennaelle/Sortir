@@ -18,16 +18,16 @@ class Campus
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'siteOrganisateur')]
-    private Collection $sorties;
+    #[ORM\OneToMany(mappedBy: 'campus', targetEntity: Sortie::class, orphanRemoval: true)]
+    private Collection $listeSorties;
 
-    #[ORM\OneToMany(targetEntity: Participant::class, mappedBy: 'campus')]
-    private Collection $participants;
+    #[ORM\OneToMany(mappedBy: 'campus', targetEntity: Participant::class, orphanRemoval: true)]
+    private Collection $listeEleves;
 
     public function __construct()
     {
-        $this->sorties = new ArrayCollection();
-        $this->participants = new ArrayCollection();
+        $this->listeSorties = new ArrayCollection();
+        $this->listeEleves = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -50,27 +50,27 @@ class Campus
     /**
      * @return Collection<int, Sortie>
      */
-    public function getSorties(): Collection
+    public function getListeSorties(): Collection
     {
-        return $this->sorties;
+        return $this->listeSorties;
     }
 
-    public function addSorty(Sortie $sorty): static
+    public function addListeSorty(Sortie $listeSorty): static
     {
-        if (!$this->sorties->contains($sorty)) {
-            $this->sorties->add($sorty);
-            $sorty->setCampus($this);
+        if (!$this->listeSorties->contains($listeSorty)) {
+            $this->listeSorties->add($listeSorty);
+            $listeSorty->setCampus($this);
         }
 
         return $this;
     }
 
-    public function removeSorty(Sortie $sorty): static
+    public function removeListeSorty(Sortie $listeSorty): static
     {
-        if ($this->sorties->removeElement($sorty)) {
+        if ($this->listeSorties->removeElement($listeSorty)) {
             // set the owning side to null (unless already changed)
-            if ($sorty->getCampus() === $this) {
-                $sorty->setCampus(null);
+            if ($listeSorty->getCampus() === $this) {
+                $listeSorty->setCampus(null);
             }
         }
 
@@ -80,27 +80,27 @@ class Campus
     /**
      * @return Collection<int, Participant>
      */
-    public function getParticipants(): Collection
+    public function getListeEleves(): Collection
     {
-        return $this->participants;
+        return $this->listeEleves;
     }
 
-    public function addParticipant(Participant $participant): static
+    public function addListeElefe(Participant $listeElefe): static
     {
-        if (!$this->participants->contains($participant)) {
-            $this->participants->add($participant);
-            $participant->setCampus($this);
+        if (!$this->listeEleves->contains($listeElefe)) {
+            $this->listeEleves->add($listeElefe);
+            $listeElefe->setCampus($this);
         }
 
         return $this;
     }
 
-    public function removeParticipant(Participant $participant): static
+    public function removeListeElefe(Participant $listeElefe): static
     {
-        if ($this->participants->removeElement($participant)) {
+        if ($this->listeEleves->removeElement($listeElefe)) {
             // set the owning side to null (unless already changed)
-            if ($participant->getCampus() === $this) {
-                $participant->setCampus(null);
+            if ($listeElefe->getCampus() === $this) {
+                $listeElefe->setCampus(null);
             }
         }
 

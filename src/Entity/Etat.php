@@ -16,11 +16,11 @@ class Etat
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Choice(['Créée', 'Ouverte','Clôturée', 'Activité en cours', 'passée', 'Annulée'])]
     #[ORM\Column(length: 255)]
-    #[ORM\Assert\Choice(['Créée', 'Ouverte', 'Clôturée', 'Activité en cours', 'Passée', 'Annulée'])]
     private ?string $libelle = null;
 
-    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'etat')]
+    #[ORM\OneToMany(mappedBy: 'etat', targetEntity: Sortie::class, orphanRemoval: true)]
     private Collection $sorties;
 
     public function __construct()

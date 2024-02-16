@@ -15,13 +15,13 @@ class Ville
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 12, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $codePostal = null;
 
-    #[ORM\OneToMany(targetEntity: Lieu::class, mappedBy: 'ville')]
+    #[ORM\OneToMany(targetEntity: Lieu::class, mappedBy: 'ville', orphanRemoval: true)]
     private Collection $lieux;
 
     public function __construct()
@@ -39,7 +39,7 @@ class Ville
         return $this->nom;
     }
 
-    public function setNom(?string $nom): static
+    public function setNom(string $nom): static
     {
         $this->nom = $nom;
 
@@ -51,7 +51,7 @@ class Ville
         return $this->codePostal;
     }
 
-    public function setCodePostal(?string $codePostal): static
+    public function setCodePostal(string $codePostal): static
     {
         $this->codePostal = $codePostal;
 

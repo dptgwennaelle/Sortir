@@ -16,7 +16,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
-class AppAuthenticator extends AbstractLoginFormAuthenticator
+class AppLoginFormAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
 
@@ -28,12 +28,12 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
 
     public function authenticate(Request $request): Passport
     {
-        $mail = $request->request->get('mail', '');
+        $identifiant = $request->request->get('identifiant', '');
 
-        $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $mail);
+        $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $identifiant);
 
         return new Passport(
-            new UserBadge($mail),
+            new UserBadge($identifiant),
             new PasswordCredentials($request->request->get('password', '')),
             [
                 new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
@@ -47,8 +47,6 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
-
-
         return new RedirectResponse($this->urlGenerator->generate('sortir_home'));
     }
 

@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+{%block css %}
+{{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/annulation.css') }}">
+{% endblock %}
+{% block body %}
+<div><img src="" alt=""></div>
+<div class="annulation">
+    <h1>ANNULER UNE SORTIE</h1>
+    <div class="nomSortie">
+        <h5>Nom de la sortie</h5>
+        <p class="bordureP">{{ sortie.nom }}</p>
+    </div>
+    <div class="dateSortie">
+        <h5>Date de la sortie</h5>
+        <p class="bordureP"> {{ sortie.dateHeureDebut|date('d/m/y H:i') }}</p>
+    </div>
+    <div class="campusSortie">
+        <h5>Campus</h5>
+        <p class="bordureP">{{ sortie.campus.nom }}</p>
+    </div>
+    <div class="lieuSortie">
+        <h5>Lieu</h5>
+        <p class="bordureP">{{ sortie.lieu.nom }}</p>
+    </div>
+<div class="formulaireAnnulation">
+    {{ form_start(sortieAnnulationForm) }}
+    {{ form_widget(sortieAnnulationForm) }}
+    <button type="submit">Enregistrer</button>
+    <a href="{{ path('sortir_liste') }}"><button type="button">Annuler</button></a>
+
+    {{ form_end(sortieAnnulationForm) }}
+</div>
+</div>
+{% endblock %}
+
+

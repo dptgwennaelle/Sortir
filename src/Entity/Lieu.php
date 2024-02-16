@@ -15,10 +15,10 @@ class Lieu
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $rue = null;
 
     #[ORM\Column(nullable: true)]
@@ -27,12 +27,12 @@ class Lieu
     #[ORM\Column(nullable: true)]
     private ?float $longitude = null;
 
-    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'lieu')]
-    private Collection $sorties;
-
     #[ORM\ManyToOne(inversedBy: 'lieux')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Ville $ville = null;
+
+    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'lieu', orphanRemoval: true)]
+    private Collection $sorties;
 
     public function __construct()
     {
@@ -49,7 +49,7 @@ class Lieu
         return $this->nom;
     }
 
-    public function setNom(?string $nom): static
+    public function setNom(string $nom): static
     {
         $this->nom = $nom;
 
@@ -61,7 +61,7 @@ class Lieu
         return $this->rue;
     }
 
-    public function setRue(?string $rue): static
+    public function setRue(string $rue): static
     {
         $this->rue = $rue;
 
@@ -92,6 +92,18 @@ class Lieu
         return $this;
     }
 
+    public function getVille(): ?Ville
+    {
+        return $this->ville;
+    }
+
+    public function setVille(?Ville $ville): static
+    {
+        $this->ville = $ville;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Sortie>
      */
@@ -118,18 +130,6 @@ class Lieu
                 $sorty->setLieu(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getVille(): ?Ville
-    {
-        return $this->ville;
-    }
-
-    public function setVille(?Ville $ville): static
-    {
-        $this->ville = $ville;
 
         return $this;
     }

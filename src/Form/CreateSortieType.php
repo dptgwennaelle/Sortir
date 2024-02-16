@@ -7,48 +7,37 @@ use App\Entity\Etat;
 use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
-use App\Entity\Ville;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SortieType extends AbstractType
+class CreateSortieType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('nom')
             ->add('dateHeureDebut')
-            ->add('duree')
+            ->add('duree', null, [
+                'label'=>"Durée (en minutes) :"
+            ])
             ->add('dateLimiteInscription')
             ->add('nbInscriptionsMax')
-            ->add('infosSortie', TextareaType::class, [
-                'label' => 'infos sorties'
+            ->add('infosSortie')
+            ->add('lieu', EntityType::class, [
+                'class' => Lieu::class,
+'choice_label' => 'nom',
             ])
             ->add('etat', EntityType::class, [
                 'class' => Etat::class,
-                'choice_label' => 'libelle',
+'choice_label' => 'libelle',
             ])
-            ->add('siteOrganisateur', EntityType::class, [
+            ->add('campus', EntityType::class, [
                 'class' => Campus::class,
-                'choice_label' => 'nom',
+'choice_label' => 'nom',
             ])
-            ->add('organisateur', EntityType::class, [
-                'class' => Participant::class,
-                'choice_label' => 'nom',
-            ])
-            ->add('participantsInscrits', EntityType::class, [
-                'class' => Participant::class,
-                'choice_label' => 'nom',
-                'multiple' => true,
-            ])
-            ->add('lieu', EntityType::class, [
-                'class' => Lieu::class,
-                'choice_label' => 'nom',
-                'label' => 'Lieux'
-            ])
+
         ;
     }
 

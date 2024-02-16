@@ -1,39 +1,22 @@
-{%extends 'base.html.twig' %}
-
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/createSortie.css') }}">
+{% endblock %}
 {% block body %}
+    {{ form_start(sortieForm) }}
+    {{ form_row(sortieForm.dateHeureDebut) }}
+    {{ form_row(sortieForm.duree) }}
+    {{ form_row(sortieForm.dateLimiteInscription) }}
+    {{ form_row(sortieForm.nbInscriptionsMax) }}
+    {{ form_row(sortieForm.infosSortie) }}
+    {{ form_row(sortieForm.etat) }}
+    {{ form_row(sortieForm.campus) }}
+    {{ form_row(sortieForm.nom) }}
+    {{ form_row(sortieForm.lieu) }}
 
-<div class = "form-container">
-
-    {{ form_errors(FormSortie) }}
-
-    {{ form_start(FormSortie) }}
-
-    <div class = "form-container1">
-
-        {{ form_row((FormSortie.nom)) }}
-        {{ form_row((FormSortie.dateHeureDebut)) }}
-        {{ form_row((FormSortie.dateLimiteInscription)) }}
-        {{ form_row((FormSortie.nbInscriptionsMax)) }}
-        {{ form_row((FormSortie.duree)) }}
-        {{ form_row((FormSortie.infosSortie)) }}
-    </div>
-    <div class = "form-container2">
-        {{ form_row((FormSortie.siteOrganisateur)) }}
-
-        <div>Villes</div>
-        <select name="ville">
-
-            {% for ville in villes %}
-                <option value="{{ ville.id }}">{{ ville.nom }}</option>
-            {% endfor %}
-        </select>
-
-        {{ form_row((FormSortie.lieu)) }}
-    </div>
-
-    <button type="submit" class="btn">Valider</button>
-
-    {{ form_end(FormSortie) }}
-</div>
+    <button>Créer</button>
+    {{ form_end(sortieForm) }}
 
 {% endblock %}
+
