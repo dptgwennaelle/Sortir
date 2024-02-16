@@ -2,22 +2,36 @@
 
 namespace App\Controller ;
 
-use App\Repository\CampusRepository;
-use App\Repository\VilleRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Doctrine\Common\Util\ClassUtils;
-use Symfony\Component\Routing\Annotation\Route;
 
+use App\Repository\ParticipantRepository;
+use App\Repository\VilleRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SearchType;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class AdminController extends AbstractController
 {
-    #[Route('/admin/villes', name: 'admin_villes')]
-    public function villes(VilleRepository $villeRepository){
-
+    #[Route('/admin/villeliste', name: 'admin_villeliste')]
+    public function liste(Request $request,
+                          VilleRepository $villeRepository,
+                          EntityManagerInterface $entityManager): Response
+    {
         $villes = $villeRepository->findAll();
-
-        return $this->render('admin/villes.html.twig', [
-            'ville' => $villes
+        $form = $this->createForm(SearchType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Traitement des données du formulaire
+            $searchTerm = $form->get('search')->getData();
+            return $this->render('admin/villeliste.html.twig', [
+                'villes' => $villes,
+                'form' => $form->createView(),
+            ]);}
+        return $this->render('admin/villeliste.html.twig', [
+            'villes'=>$villes,
+            'form'=>$form->createView()
         ]);
     }
 

@@ -1,0 +1,27 @@
+form {
+    max-width: 600px; /* Ajuster la largeur maximale du formulaire selon vos préférences */
+    margin: 0 auto; /* Centrer le formulaire sur la page */
+    padding: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #3498db; /* Couleur bleue */
+    color: #fff; /* Texte blanc */
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+}

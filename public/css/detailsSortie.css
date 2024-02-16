@@ -1,0 +1,55 @@
+/* ... Vos styles existants ... */
+
+/* Nouveaux styles pour la page d'affichage d'une sortie */
+
+.sortie-details {
+    max-width: 70%;
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.sortie-details th, .sortie-details td {
+    border: 1px solid #dcdcdc; /* Bordures grises pour les cellules */
+    padding: 10px;
+    text-align: left;
+}
+
+.sortie-details th {
+    background-color: #3498db; /* Bleu plus foncé - Fond pour les entêtes */
+    color: #fff;
+}
+
+.sortie-details tr:hover {
+    background-color: #f5f5f5; /* Gris clair au survol des lignes */
+}
+
+.sortie-details a {
+    color: #3498db; /* Couleur bleue pour les liens dans la table */
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.sortie-details a:hover {
+    text-decoration: underline; /* Souligner le lien au survol */
+}
+
+.sortie-details-infos {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.button-container {
+    margin-top: 20px;
+}
+
+.participant-list{
+    width: 60%;
+    margin-left : 20%;
+}
+
+.btn {
+    margin-top: 2%;
+}
+
+/* ... Autres styles ... */

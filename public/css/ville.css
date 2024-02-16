@@ -1,0 +1,62 @@
+/* Ajoutez votre style spécifique pour la page ville ici */
+
+h3 {
+    color: #3498db; /* Couleur bleue */
+    margin-left: 2%;
+}
+
+
+
+.formVille form button {
+    background-color: #3498db; /* Couleur bleue */
+    color: #fff; /* Texte blanc */
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+}
+
+.table-container {
+    width: 70%;
+    margin : 2% 15% 2% 15%;
+    overflow-x: auto; /* Ajout d'une barre de défilement horizontale si nécessaire */
+
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #dcdcdc; /* Bordures grises */
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #3498db; /* Bleu plus foncé - Fond pour les entêtes */
+    color: #fff;
+}
+
+tr:hover {
+    background-color: #f5f5f5; /* Gris clair au survol des lignes */
+}
+
+article {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.btn-primary {
+    background-color: #3498db; /* Couleur bleue */
+    color: #fff; /* Texte blanc */
+    border: none;
+    padding: 8px 15px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 0% 0% 10% 2%;
+}
