@@ -33,7 +33,8 @@
             <h5>Campus</h5>
             <p class="bordureP">{{ profil.campus.nom }}</p>
         </div>
-
+        <a href="{{ path('profil_modifier', {'id': profil.id})}}">
+            <button class="btn btn-primary" style="margin-left: 50%">Modifier</button></a>
     </div>
 {% endblock %}
 

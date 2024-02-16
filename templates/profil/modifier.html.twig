@@ -1,0 +1,10 @@
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 style="color: #3498db;margin-left: 40%;">Modifier mon profil</h1>
+    {{ form_start(profilModifForm) }}
+    {{ form_widget(profilModifForm) }}
+    <button class="btn btn-primary">Modifier</button>
+    {{ form_end(profilModifForm) }}
+{% endblock %}

@@ -20,58 +20,25 @@ class ModificationSortieType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('campus', EntityType::class, [
-                'required' => false,
-                'class' => Campus::class,
-                'label' => "Campus : ",
+            ->add('nom')
+            ->add('dateHeureDebut')
+            ->add('duree', null, [
+                'label'=>"Durée (en minutes) :"
+            ])
+            ->add('dateLimiteInscription')
+            ->add('nbInscriptionsMax')
+            ->add('infosSortie')
+            ->add('lieu', EntityType::class, [
+                'class' => Lieu::class,
                 'choice_label' => 'nom',
-                'attr' => ['class' => 'form-control'],
             ])
-
-            ->add('nom', TextType::class, [
-                'required' => false,
-                'label' => "Nom : ",
-                'attr' => ['class' => 'form-control'],
+            ->add('etat', EntityType::class, [
+                'class' => Etat::class,
+                'choice_label' => 'libelle',
             ])
-
-            ->add('dateDebut', DateType::class, [
-                'required' => false,
-                'label' => "Entre : ",
-                'attr' => ['class' => 'form-control'],
-            ])
-
-            ->add('dateFin', DateType::class, [
-                'required' => false,
-                'label' => "Et : ",
-                'attr' => ['class' => 'form-control'],
-            ])
-
-            ->add('organisateur', CheckboxType::class, [
-                'required' => false,
-                'label' => "Sortie dont je suis l'organisateur/trice : ",
-                'attr' => ['class' => 'form-check-input'],
-            ])
-
-            ->add('participant', CheckboxType::class, [
-                'required' => false,
-                'label' => "Sorties auxquelles je suis inscrit/e : ",
-                'attr' => ['class' => 'form-check-input'],
-            ])
-
-            ->add('nonInscrit', CheckboxType::class, [
-                'required' => false,
-                'label' => "Sortie dont je ne suis pas inscrit/e : ",
-                'attr' => ['class' => 'form-check-input'],
-            ])
-
-            ->add('sortiePassee', CheckboxType::class, [
-                'required' => false,
-                'label' => "Sorties passées",
-                'attr' => ['class' => 'form-check-input'],
-            ])
-
-            ->add('rechercher', SubmitType::class, [
-                'attr' => ['class' => 'btn btn-primary'],
+            ->add('campus', EntityType::class, [
+                'class' => Campus::class,
+                'choice_label' => 'nom',
             ])
         ;
     }
